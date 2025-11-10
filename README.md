@@ -36,10 +36,19 @@ make deploy-dev
 
 ## Development Workflow
 1. Start timetracker: `timetracker start template-backend`
-2. Make changes
-3. Build: `make build`
-4. Auto-commit on success: `git add . && git commit -m "Build successful - $(date '+%Y-%m-%d %H:%M:%S')"`
-5. Log time: `timetracker log --q-time X --personal-time Y --category coding`
+2. Start feature: `git flow feature start feature-name`
+3. Make changes
+4. Build: `make build`
+5. Auto-commit on success: `git add . && git commit -m "feat: description - $(date '+%Y-%m-%d %H:%M:%S')"`
+6. Finish feature: `git flow feature finish feature-name`
+7. Log time: `timetracker log --q-time X --personal-time Y --category coding`
+
+## Git Flow Requirements
+- **MANDATORY**: Use Git Flow branching model
+- **Feature branches**: All changes via `git flow feature start/finish`
+- **Semantic commits**: Use conventional commit messages
+- **No direct commits**: Never commit directly to main/develop
+- See [GITFLOW.md](GITFLOW.md) for complete workflow
 
 ## Time Tracking Summary
 Project: Example Template
