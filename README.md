@@ -80,3 +80,4 @@ All endpoints are served under `/template` context path.
 
 ## Deployment
 Uses standard deployment tool: `~/bin/deployer deploy2dev`
+# GitHub Actions Test
