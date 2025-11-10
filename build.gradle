@@ -3,6 +3,7 @@ plugins {
     id("io.micronaut.application") version "4.2.1"
     id("checkstyle")
     id("com.github.spotbugs") version "5.2.5"
+    id("com.diffplug.spotless") version "6.23.3"
 }
 
 version = "0.1"
@@ -59,4 +60,14 @@ spotbugs {
 
 tasks.named("check") {
     dependsOn("checkstyleMain", "spotbugsMain")
+}
+
+spotless {
+    java {
+        licenseHeader '/*\n * Copyright (c) $YEAR Saison Technology International\n * https://saison-technology-intl.com/\n * All rights reserved.\n */'
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
