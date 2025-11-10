@@ -35,16 +35,14 @@ make deploy-dev
 ```
 
 ## Development Workflow
-1. Start timetracker: `timetracker start template-backend`
-2. Start feature: `git flow feature start feature-name`
-3. Make changes
-4. Build: `make build`
-5. Auto-commit on success: `git add . && git commit -m "feat: description - $(date '+%Y-%m-%d %H:%M:%S')"`
-6. Finish feature: `git flow feature finish feature-name`
-7. Log time: `timetracker log --q-time X --personal-time Y --category coding`
+1. Start feature: `git flow feature start feature-name`
+2. Make changes
+3. Build: `make build`
+4. Auto-commit on success: `git add . && git commit -m "JIRA-XXX: feat: description - $(date '+%Y-%m-%d %H:%M:%S')"`
+5. Finish feature: `git flow feature finish feature-name`
 
 ## Amazon Q Developer Rules
-- **Time Tracking**: All Q sessions must use timetracker (see `.amazonq/rules/`)
+- **JIRA Traceability**: All commits must start with JIRA-XXX:
 - **Auto-commit**: Commit after every successful build
 - **Quality Gates**: 0% violations required for all quality tools
 - **Git Flow**: Mandatory branching model for all changes
@@ -56,14 +54,6 @@ make deploy-dev
 - **No direct commits**: Never commit directly to main/develop
 - See [GITFLOW.md](GITFLOW.md) for complete workflow
 
-## Time Tracking Summary
-Project: Example Template
-Total Time: [X hours]
-Q Developer Time: [X hours] 
-Personal Time: [X hours]
-Estimated Without Q: [X hours]
-Efficiency Gain: [X%]
-Categories: coding([X]h), debugging([X]h), meetings([X]h), research([X]h)
 
 ## Endpoints
 - `GET /template/health` - Health check endpoint

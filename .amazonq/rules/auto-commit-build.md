@@ -8,8 +8,8 @@
 # Stage all changes
 git add .
 
-# Commit with build timestamp
-git commit -m "Build successful - $(date '+%Y-%m-%d %H:%M:%S')"
+# Commit with JIRA ticket and timestamp
+git commit -m "JIRA-XXX: Build successful - $(date '+%Y-%m-%d %H:%M:%S')"
 
 # Show commit details
 git show --stat HEAD
@@ -26,33 +26,37 @@ make build
 **3. If build succeeds, immediately commit:**
 ```bash
 git add .
-git commit -m "Build successful - $(date '+%Y-%m-%d %H:%M:%S')"
+git commit -m "JIRA-XXX: Build successful - $(date '+%Y-%m-%d %H:%M:%S')"
 git show --stat HEAD
 ```
 
 **4. For feature commits, use descriptive messages:**
 ```bash
 git add .
-git commit -m "feat: [description] - $(date '+%Y-%m-%d %H:%M:%S')"
+git commit -m "JIRA-XXX: feat: [description] - $(date '+%Y-%m-%d %H:%M:%S')"
 git show --stat HEAD
 ```
 
 ## Commit Message Formats
 
+**All commits MUST start with JIRA ticket:**
+
 **Successful builds:**
-- `"Build successful - YYYY-MM-DD HH:MM:SS"`
+- `"JIRA-XXX: Build successful - YYYY-MM-DD HH:MM:SS"`
 
 **Feature additions:**
-- `"feat: [description] - YYYY-MM-DD HH:MM:SS"`
+- `"JIRA-XXX: feat: [description] - YYYY-MM-DD HH:MM:SS"`
 
 **Bug fixes:**
-- `"fix: [description] - YYYY-MM-DD HH:MM:SS"`
+- `"JIRA-XXX: fix: [description] - YYYY-MM-DD HH:MM:SS"`
 
 **Refactoring:**
-- `"refactor: [description] - YYYY-MM-DD HH:MM:SS"`
+- `"JIRA-XXX: refactor: [description] - YYYY-MM-DD HH:MM:SS"`
 
 ## Enforcement
+- ❌ **NO commits without JIRA ticket prefix**
 - ❌ **NO successful builds without commits**
+- ✅ **MUST start all commits with JIRA-XXX:**
 - ✅ **MUST commit immediately after successful compilation**
 - ✅ **MUST show commit details with `git show --stat HEAD`**
 - ✅ **MUST include timestamp in commit message**
@@ -60,11 +64,11 @@ git show --stat HEAD
 ## Integration with Development Workflow
 ```bash
 # Standard development cycle
-make build && git add . && git commit -m "Build successful - $(date '+%Y-%m-%d %H:%M:%S')" && git show --stat HEAD
+make build && git add . && git commit -m "JIRA-XXX: Build successful - $(date '+%Y-%m-%d %H:%M:%S')" && git show --stat HEAD
 ```
 
 ## Purpose
-- Track all working code states
-- Maintain build history
+- Track all working code states with JIRA traceability
+- Maintain build history linked to tickets
 - Enable easy rollback to last working version
-- Document development progress with timestamps
+- Document development progress with timestamps and ticket references
