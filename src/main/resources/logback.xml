@@ -16,7 +16,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.example.template" level="DEBUG"/>
+    <logger name="com.saisontechnologyintl.template" level="DEBUG"/>
     <logger name="io.micronaut" level="INFO"/>
     
     <root level="INFO">

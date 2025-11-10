@@ -3,7 +3,7 @@
  * https://saison-technology-intl.com/
  * All rights reserved.
  */
-package com.example.template.bdd;
+package com.saisontechnologyintl.template.bdd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

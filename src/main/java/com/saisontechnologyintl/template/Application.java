@@ -3,7 +3,7 @@
  * https://saison-technology-intl.com/
  * All rights reserved.
  */
-package com.example.template;
+package com.saisontechnologyintl.template;
 
 import io.micronaut.runtime.Micronaut;
 

@@ -3,7 +3,7 @@
  * https://saison-technology-intl.com/
  * All rights reserved.
  */
-package com.example.template.bdd;
+package com.saisontechnologyintl.template.bdd;
 
 import io.cucumber.junit.platform.engine.Constants;
 import org.junit.platform.suite.api.ConfigurationParameter;
@@ -14,5 +14,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-@ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "com.example.template.bdd")
+@ConfigurationParameter(
+    key = Constants.GLUE_PROPERTY_NAME,
+    value = "com.saisontechnologyintl.template.bdd")
 public class CucumberTest {}

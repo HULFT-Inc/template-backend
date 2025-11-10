@@ -2,6 +2,11 @@
 
 Java Micronaut REST Service template for new developers.
 
+## Package Structure Requirements
+- **MANDATORY**: Use company domain `com.saisontechnologyintl.<project-name>`
+- **Example**: `com.saisontechnologyintl.template`
+- **Never use**: `com.example.*` or generic packages
+
 ## Architecture
 - **Framework:** Micronaut 4.2.1
 - **Runtime:** Java 17

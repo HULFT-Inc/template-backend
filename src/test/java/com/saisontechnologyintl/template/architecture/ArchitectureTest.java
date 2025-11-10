@@ -3,7 +3,7 @@
  * https://saison-technology-intl.com/
  * All rights reserved.
  */
-package com.example.template.architecture;
+package com.saisontechnologyintl.template.architecture;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class ArchitectureTest {
 
   private final JavaClasses importedClasses =
-      new ClassFileImporter().importPackages("com.example.template");
+      new ClassFileImporter().importPackages("com.saisontechnologyintl.template");
 
   @Test
   void controllersShouldOnlyBeAccessedByControllers() {

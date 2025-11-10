@@ -7,7 +7,7 @@ plugins {
 }
 
 version = "0.1"
-group = "com.example.template"
+group = "com.saisontechnologyintl.template"
 
 repositories {
     mavenCentral()
@@ -44,7 +44,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.example.template.Application")
+    mainClass.set("com.saisontechnologyintl.template.Application")
 }
 
 java {
@@ -57,7 +57,7 @@ micronaut {
     testRuntime("junit5")
     processing {
         incremental(true)
-        annotations("com.example.template.*")
+        annotations("com.saisontechnologyintl.template.*")
     }
 }
 
