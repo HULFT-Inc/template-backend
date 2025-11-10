@@ -57,6 +57,7 @@ make deploy-dev
 
 ## Endpoints
 - `GET /template/health` - Health check endpoint
+- `GET /template/metrics/test - Test custom metrics
 - `GET /template/swagger-ui` - API documentation
 
 ## Features
