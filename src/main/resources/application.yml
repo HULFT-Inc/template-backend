@@ -2,4 +2,4 @@ micronaut:
   server:
     context-path: /template
   application:
-    name: template-backend
+    name: template
