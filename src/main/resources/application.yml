@@ -28,3 +28,9 @@ micrometer:
   web:
     server:
       auto-time-requests: true
+
+aws:
+  region: us-east-1
+  logs:
+    group: /aws/ec2/template-service
+    stream: template-${random.uuid}

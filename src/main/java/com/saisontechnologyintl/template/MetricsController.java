@@ -35,8 +35,9 @@ public class MetricsController {
     return requestTimer.recordCallable(
         () -> {
           requestCounter.increment();
-          LOG.info("Custom metrics generated");
-          return "Metrics recorded";
+          LOG.info("Custom metrics generated - counter incremented");
+          LOG.debug("Request timer recorded for metrics test endpoint");
+          return "Metrics recorded and logged to CloudWatch";
         });
   }
 }

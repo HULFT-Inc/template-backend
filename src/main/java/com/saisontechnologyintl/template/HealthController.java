@@ -31,7 +31,8 @@ public class HealthController {
   @ApiResponse(responseCode = "200", description = "Service is healthy")
   public String health() {
     healthCheckCounter.increment();
-    LOG.info("Health check requested");
+    LOG.info("Health check requested - service is healthy");
+    LOG.debug("Health check counter incremented, metrics sent to CloudWatch");
     return "OK";
   }
 }
