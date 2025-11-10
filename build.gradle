@@ -1,0 +1,61 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.2.1"
+    id("checkstyle")
+    id("com.github.spotbugs") version "5.2.5"
+}
+
+version = "0.1"
+group = "com.example.template"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+    annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
+    implementation("io.micronaut:micronaut-management")
+    implementation("io.micronaut.aws:micronaut-aws-alexa")
+    implementation("software.amazon.awssdk:s3")
+    
+    runtimeOnly("ch.qos.logback:logback-classic")
+    
+    testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation("io.cucumber:cucumber-java")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine")
+}
+
+application {
+    mainClass.set("com.example.template.Application")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("com.example.template.*")
+    }
+}
+
+checkstyle {
+    toolVersion = "10.12.4"
+    configFile = file("config/checkstyle/checkstyle.xml")
+}
+
+spotbugs {
+    toolVersion = "4.8.2"
+}
+
+tasks.named("check") {
+    dependsOn("checkstyleMain", "spotbugsMain")
+}
