@@ -22,22 +22,25 @@ Java Micronaut REST Service template for new developers.
 ## Quick Start
 ```bash
 # Build project
-make build
+./control.sh build
 
 # Run locally
-make run
+./control.sh run
 
 # Run quality checks
-make check
+./control.sh quality
+
+# Start development environment
+./control.sh dev
 
 # Deploy to dev
-make deploy-dev
+./control.sh deploy-dev
 ```
 
 ## Development Workflow
 1. Start feature: `git flow feature start feature-name`
 2. Make changes
-3. Build: `make build`
+3. Build: `./control.sh build`
 4. Auto-commit on success: `git add . && git commit -m "JIRA-XXX: feat: description - $(date '+%Y-%m-%d %H:%M:%S')"`
 5. Finish feature: `git flow feature finish feature-name`
 

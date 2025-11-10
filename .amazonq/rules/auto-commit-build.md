@@ -2,7 +2,7 @@
 
 ## MANDATORY: Commit changes after every successful build
 
-**After every successful `make build` or compilation:**
+**After every successful `./control.sh build` or compilation:**
 
 ```bash
 # Stage all changes
@@ -20,7 +20,7 @@ git show --stat HEAD
 **1. Make changes to code**
 **2. Build the project:**
 ```bash
-make build
+./control.sh build
 ```
 
 **3. If build succeeds, immediately commit:**
@@ -64,7 +64,7 @@ git show --stat HEAD
 ## Integration with Development Workflow
 ```bash
 # Standard development cycle
-make build && git add . && git commit -m "JIRA-XXX: Build successful - $(date '+%Y-%m-%d %H:%M:%S')" && git show --stat HEAD
+./control.sh build && git add . && git commit -m "JIRA-XXX: Build successful - $(date '+%Y-%m-%d %H:%M:%S')" && git show --stat HEAD
 ```
 
 ## Purpose
