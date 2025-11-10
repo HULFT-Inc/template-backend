@@ -47,6 +47,13 @@ Categories: coding([X]h), debugging([X]h), meetings([X]h), research([X]h)
 
 ## Endpoints
 - `GET /template/health` - Health check endpoint
+- `GET /template/swagger-ui` - API documentation
+
+## Features
+- **API Documentation**: OpenAPI/Swagger UI available at `/template/swagger-ui`
+- **BDD Testing**: Cucumber tests for behavior verification
+- **LocalStack Integration**: DynamoDB, SQS, SNS testing
+- **PostgreSQL Testing**: Testcontainers integration
 
 ## Context Path
 All endpoints are served under `/template` context path.
