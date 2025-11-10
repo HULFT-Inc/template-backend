@@ -36,3 +36,5 @@ public class HealthController {
     return "OK";
   }
 }
+
+  // Test comment to trigger GitHub Actions CI pipeline

@@ -17,9 +17,9 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: template-backend
-  ECS_SERVICE: template-service
-  ECS_CLUSTER: template-cluster
+  ECR_REPOSITORY: hulft-template-backend
+  ECS_SERVICE: hulft-template-service
+  ECS_CLUSTER: hulft-template-cluster
 
 jobs:
   build-and-deploy:
@@ -60,8 +60,8 @@ jobs:
     - name: Build Docker image
       run: |
         ./control.sh docker-build
-        docker tag template-backend:latest $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA
-        docker tag template-backend:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        docker tag hulft-template-backend:latest $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA
+        docker tag hulft-template-backend:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         
@@ -88,7 +88,7 @@ jobs:
     - name: Run smoke tests
       run: |
         sleep 30
-        curl -f http://template-service.dev.company.com/template/health || exit 1
+        curl -f http://hulft-template-service.dev.hulft.com/template/health || exit 1
         
     - name: Notify Slack on success
       if: success()
