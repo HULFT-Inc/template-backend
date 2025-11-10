@@ -1,5 +1,5 @@
 micronaut:
   server:
-    context-path: /api/v1
+    context-path: /template
   application:
     name: template-backend

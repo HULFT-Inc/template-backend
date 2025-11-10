@@ -45,10 +45,10 @@ Efficiency Gain: [X%]
 Categories: coding([X]h), debugging([X]h), meetings([X]h), research([X]h)
 
 ## Endpoints
-- `GET /api/v1/health` - Health check endpoint
+- `GET /template/health` - Health check endpoint
 
 ## Context Path
-All endpoints are served under `/api/v1` context path.
+All endpoints are served under `/template` context path.
 
 ## Deployment
 Uses standard deployment tool: `~/bin/deployer deploy2dev`
