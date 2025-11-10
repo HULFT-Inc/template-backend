@@ -12,6 +12,7 @@ Java Micronaut REST Service template for new developers.
 - ✅ 0% Checkstyle violations
 - ✅ 0% SpotBugs violations  
 - ✅ BDD test coverage required
+- ✅ ArchUnit architecture rules enforced
 
 ## Quick Start
 ```bash
