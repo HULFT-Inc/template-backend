@@ -59,7 +59,7 @@ jobs:
       run: ./gradlew test --tests "*IntegrationTest" --no-daemon
       
     - name: Generate Test Report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@1
       if: success() || failure()
       with:
         name: Test Results (Java ${{ matrix.java-version }})
