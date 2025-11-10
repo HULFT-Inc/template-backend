@@ -1,0 +1,107 @@
+name: Security Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        
+    - name: OWASP Dependency Check
+      run: |
+        ./gradlew dependencyCheckAnalyze --no-daemon
+        
+    - name: Upload OWASP report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: owasp-report
+        path: build/reports/dependency-check-report.html
+        
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java
+        
+    - name: Build for CodeQL
+      run: ./gradlew build --no-daemon
+      
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+        
+    - name: Docker security scan
+      if: github.event_name == 'push'
+      run: |
+        ./control.sh docker-build
+        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $HOME/Library/Caches:/root/.cache/ \
+          aquasec/trivy:latest image template-backend:latest
+          
+    - name: License compliance check
+      run: |
+        ./gradlew generateLicenseReport --no-daemon
+        
+    - name: Upload license report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: license-report
+        path: build/reports/dependency-license/
+        
+    - name: Security summary
+      if: always()
+      run: |
+        echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ OWASP Dependency Check completed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ CodeQL analysis completed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Trivy vulnerability scan completed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ License compliance check completed" >> $GITHUB_STEP_SUMMARY
+        
+    - name: Fail on high vulnerabilities
+      run: |
+        if grep -q "HIGH\|CRITICAL" build/reports/dependency-check-report.html; then
+          echo "❌ High or critical vulnerabilities found!"
+          exit 1
+        fi

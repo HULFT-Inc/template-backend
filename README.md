@@ -13,6 +13,12 @@ Java Micronaut REST Service template for new developers.
 - **Deployment:** AWS ALB + VPC Lattice
 - **Build:** Gradle with Shadow plugin
 
+## CI/CD Pipeline
+- **CI Pipeline**: Build, test, quality gates (Checkstyle, SpotBugs, ArchUnit)
+- **CD Pipeline**: Docker build, ECR push, ECS deployment
+- **Security Pipeline**: OWASP, CodeQL, Trivy vulnerability scanning
+- **Branch Protection**: Git Flow enforcement, JIRA commit validation
+
 ## Quality Standards
 - ✅ 0% Checkstyle violations
 - ✅ 0% SpotBugs violations  

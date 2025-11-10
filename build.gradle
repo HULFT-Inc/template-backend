@@ -4,6 +4,7 @@ plugins {
     id("checkstyle")
     id("com.github.spotbugs") version "5.2.5"
     id("com.diffplug.spotless") version "6.23.3"
+    id("org.owasp.dependencycheck") version "8.4.2"
 }
 
 version = "0.1"
