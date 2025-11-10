@@ -43,6 +43,12 @@ make deploy-dev
 6. Finish feature: `git flow feature finish feature-name`
 7. Log time: `timetracker log --q-time X --personal-time Y --category coding`
 
+## Amazon Q Developer Rules
+- **Time Tracking**: All Q sessions must use timetracker (see `.amazonq/rules/`)
+- **Auto-commit**: Commit after every successful build
+- **Quality Gates**: 0% violations required for all quality tools
+- **Git Flow**: Mandatory branching model for all changes
+
 ## Git Flow Requirements
 - **MANDATORY**: Use Git Flow branching model
 - **Feature branches**: All changes via `git flow feature start/finish`
