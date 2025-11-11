@@ -46,7 +46,7 @@ show_help() {
     echo "  logs          Show application logs"
     echo "  localstack    Start LocalStack for local AWS development"
     echo "  aws-test      Test AWS services integration"
-    echo "  help          Show this help message"
+  autofix       Automatically fix code quality issues    echo "  help          Show this help message"
 }
 
 # Build function
@@ -181,6 +181,23 @@ aws_test() {
     log "AWS services testing completed"
 }
 
+# Auto-fix function
+autofix() {
+    log "Running automatic code quality fixes..."
+    
+    log "Applying Spotless formatting..."
+    ./gradlew spotlessApply --no-daemon
+    
+    log "Running quality checks to verify fixes..."
+    ./gradlew checkstyleMain checkstyleTest spotbugsMain --no-daemon
+    
+    if [ $? -eq 0 ]; then
+        log "All quality issues fixed!"
+    else
+        warn "Some issues remain - check reports for manual fixes needed"
+    fi
+}
+
 # Main script logic
 case "${1:-help}" in
     build)
@@ -227,6 +244,9 @@ case "${1:-help}" in
         ;;
     aws-test)
         aws_test
+        ;;
+    autofix)
+        autofix
         ;;
     help|*)
         show_help

@@ -30,7 +30,7 @@ public class AwsConfig {
   private String region;
 
   @Value("${aws.localstack.enabled:false}")
-  private boolean localstackEnabled;
+  private Boolean localstackEnabled;
 
   @Value("${aws.localstack.endpoint:http://localhost:4566}")
   private String localstackEndpoint;
@@ -58,7 +58,7 @@ public class AwsConfig {
                         new com.amazonaws.xray.interceptors.TracingInterceptor())
                     .build());
 
-    if (localstackEnabled) {
+    if (Boolean.TRUE.equals(localstackEnabled)) {
       builder.endpointOverride(URI.create(localstackEndpoint));
     }
 
@@ -77,7 +77,7 @@ public class AwsConfig {
                         new com.amazonaws.xray.interceptors.TracingInterceptor())
                     .build());
 
-    if (localstackEnabled) {
+    if (Boolean.TRUE.equals(localstackEnabled)) {
       builder.endpointOverride(URI.create(localstackEndpoint));
     }
 
@@ -96,7 +96,7 @@ public class AwsConfig {
                         new com.amazonaws.xray.interceptors.TracingInterceptor())
                     .build());
 
-    if (localstackEnabled) {
+    if (Boolean.TRUE.equals(localstackEnabled)) {
       builder.endpointOverride(URI.create(localstackEndpoint));
     }
 
@@ -115,7 +115,7 @@ public class AwsConfig {
                         new com.amazonaws.xray.interceptors.TracingInterceptor())
                     .build());
 
-    if (localstackEnabled) {
+    if (Boolean.TRUE.equals(localstackEnabled)) {
       builder.endpointOverride(URI.create(localstackEndpoint));
     }
 

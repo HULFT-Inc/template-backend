@@ -141,3 +141,30 @@ test {
     finalizedBy jacocoTestReport
 }
 
+
+task autoFix {
+    description = "Automatically fix code quality issues"
+    group = "verification"
+    
+    doLast {
+        // Apply Spotless formatting (fixes most Checkstyle issues)
+        project.tasks.spotlessApply.execute()
+        
+        // Generate SpotBugs report to identify issues
+        try {
+            project.tasks.spotbugsMain.execute()
+        } catch (Exception e) {
+            println "SpotBugs found issues - check build/reports/spotbugs/"
+        }
+        
+        println "Auto-fix completed. Run './gradlew build' to verify fixes."
+    }
+}
+
+// Configure Checkstyle to be less strict for auto-generated code
+checkstyle {
+    configProperties = [
+        'checkstyle.suppressions.file': file('config/checkstyle/suppressions.xml').absolutePath
+    ]
+}
+
