@@ -32,12 +32,17 @@ public class MetricsController {
   @Get("/test")
   @Operation(summary = "Test metrics", description = "Generates custom metrics for testing")
   public String testMetrics() {
-    return requestTimer.recordCallable(
-        () -> {
-          requestCounter.increment();
-          LOG.info("Custom metrics generated - counter incremented");
-          LOG.debug("Request timer recorded for metrics test endpoint");
-          return "Metrics recorded and logged to CloudWatch";
-        });
+    try {
+      return requestTimer.recordCallable(
+          () -> {
+            requestCounter.increment();
+            LOG.info("Custom metrics generated - counter incremented");
+            LOG.debug("Request timer recorded for metrics test endpoint");
+            return "Metrics recorded and logged to CloudWatch";
+          });
+    } catch (Exception e) {
+      LOG.error("Error recording metrics", e);
+      return "Error recording metrics";
+    }
   }
 }

@@ -51,6 +51,10 @@ show_help() {
     echo "  deploy-dev    Deploy to development"
     echo "  status        Show application status"
     echo "  logs          Show application logs"
+  coverage      Generate code coverage report
+  performance   Run JMeter performance tests
+  bdd           Run BDD tests only
+  unit          Run unit tests only
     echo "  help          Show this help message"
 }
 
@@ -195,6 +199,18 @@ case "${1:-help}" in
         status
         ;;
     logs)
+    coverage)
+        coverage
+        ;;
+    performance)
+        performance
+        ;;
+    bdd)
+        bdd
+        ;;
+    unit)
+        unit
+        ;;
         show_logs
         ;;
     help|--help|-h)
@@ -204,3 +220,27 @@ case "${1:-help}" in
         error "Unknown command: $1. Use './control.sh help' for usage information."
         ;;
 esac
+
+coverage() {
+    log "Generating code coverage report..."
+    ./gradlew jacocoTestReport
+    log "Coverage report generated at build/reports/jacoco/test/html/index.html"
+}
+
+performance() {
+    log "Running JMeter performance tests..."
+    ./gradlew jmeterRun
+    log "Performance test results available at build/reports/jmeter/"
+}
+
+bdd() {
+    log "Running BDD tests..."
+    ./gradlew test --tests "*CucumberTest"
+    log "BDD tests completed"
+}
+
+unit() {
+    log "Running unit tests..."
+    ./gradlew test --exclude-task "*CucumberTest"
+    log "Unit tests completed"
+}

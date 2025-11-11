@@ -69,6 +69,13 @@ Java Micronaut REST Service template for new developers.
 - `GET /template/metrics/test - Test custom metrics
 - `GET /template/swagger-ui` - API documentation
 
+## Testing
+- **Unit Tests**: JUnit 5 with Mockito and AssertJ
+- **Functional Tests**: REST Assured integration tests
+- **BDD Tests**: Cucumber with Gherkin scenarios
+- **Performance Tests**: JMeter load testing
+- **Code Coverage**: JaCoCo with 80% minimum coverage
+
 ## Features
 - **API Documentation**: OpenAPI/Swagger UI available at `/template/swagger-ui`
 - **BDD Testing**: Cucumber tests for behavior verification
