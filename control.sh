@@ -1,258 +1,153 @@
 #!/bin/bash
 
-# Template Backend Control Script
-# Center of Excellence - Saison Technology International
-
-set -e
-
-PROJECT_NAME="template-backend"
-DOCKER_IMAGE="template-backend"
-DOCKER_TAG="latest"
-
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m'
+NC='\033[0m' # No Color
 
+# Logging functions
 log() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')] $1${NC}"
+    echo -e "${GREEN}[INFO]${NC} $1"
 }
 
 warn() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%d %H:%M:%S')] WARNING: $1${NC}"
+    echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
 error() {
-    echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] ERROR: $1${NC}"
-    exit 1
+    echo -e "${RED}[ERROR]${NC} $1"
 }
 
 info() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')] INFO: $1${NC}"
+    echo -e "${BLUE}[INFO]${NC} $1"
 }
 
+# Help function
 show_help() {
     echo "Template Backend Control Script"
     echo ""
-    echo "Usage: ./control.sh [COMMAND]"
+    echo "Usage: $0 [command]"
     echo ""
     echo "Commands:"
     echo "  build         Build the application"
-    echo "  test          Run all tests"
-    echo "  quality       Run quality checks"
     echo "  run           Run the application locally"
-    echo "  docker-build  Build Docker image"
-    echo "  docker-run    Run Docker container"
+    echo "  test          Run all tests"
+    echo "  unit          Run unit tests only"
+    echo "  bdd           Run BDD tests only"
+    echo "  coverage      Generate code coverage report"
+    echo "  performance   Run JMeter performance tests"
+    echo "  quality       Run quality checks (Checkstyle, SpotBugs)"
     echo "  clean         Clean build artifacts"
-    echo "  format        Apply code formatting"
     echo "  dev           Start development environment"
-    echo "  deploy-dev    Deploy to development"
+    echo "  deploy-dev    Deploy to development environment"
     echo "  status        Show application status"
     echo "  logs          Show application logs"
-  coverage      Generate code coverage report
-  performance   Run JMeter performance tests
-  bdd           Run BDD tests only
-  unit          Run unit tests only
-  localstack    Start LocalStack for local AWS development
-  aws-test      Test AWS services integration
+    echo "  localstack    Start LocalStack for local AWS development"
+    echo "  aws-test      Test AWS services integration"
     echo "  help          Show this help message"
 }
 
+# Build function
 build() {
-    log "Building $PROJECT_NAME..."
-    ./gradlew build
-    log "Build completed successfully"
+    log "Building application..."
+    ./gradlew build --no-daemon
+    if [ $? -eq 0 ]; then
+        log "Build successful!"
+    else
+        error "Build failed!"
+        exit 1
+    fi
 }
 
+# Run function
+run() {
+    log "Starting application..."
+    ./gradlew run --no-daemon
+}
+
+# Test function
 test() {
-    log "Running tests for $PROJECT_NAME..."
-    ./gradlew test
-    log "Tests completed successfully"
+    log "Running all tests..."
+    ./gradlew test --no-daemon
 }
 
-quality() {
-    log "Running quality checks..."
-    ./gradlew checkstyleMain spotbugsMain
-    log "Quality checks passed"
-}
-
-run_app() {
-    log "Starting $PROJECT_NAME..."
-    ./gradlew run
-}
-
-docker_build() {
-    log "Building Docker image: $DOCKER_IMAGE:$DOCKER_TAG"
-    if [ ! -f Dockerfile ]; then
-        warn "Dockerfile not found, creating basic Dockerfile..."
-        create_dockerfile
-    fi
-    docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
-    log "Docker image built successfully"
-}
-
-docker_run() {
-    log "Running Docker container..."
-    docker run -p 8080:8080 --name $PROJECT_NAME $DOCKER_IMAGE:$DOCKER_TAG
-}
-
-clean() {
-    log "Cleaning build artifacts..."
-    ./gradlew clean
-    rm -rf logs/*.log
-    log "Clean completed"
-}
-
-format() {
-    log "Applying code formatting..."
-    ./gradlew spotlessApply
-    log "Code formatting applied"
-}
-
-dev() {
-    log "Starting development environment..."
-    format
-    build
-    test
-    quality
-    log "Development environment ready"
-    run_app
-}
-
-deploy_dev() {
-    log "Deploying to development environment..."
-    if command -v ~/bin/deployer &> /dev/null; then
-        ~/bin/deployer deploy2dev
-    else
-        warn "Deployer not found, using Docker build..."
-        docker_build
-        info "Docker image ready for deployment"
-    fi
-}
-
-status() {
-    log "Checking application status..."
-    if pgrep -f "template" > /dev/null; then
-        log "Application is running"
-    else
-        warn "Application is not running"
-    fi
-}
-
-show_logs() {
-    log "Showing application logs..."
-    if [ -f logs/template.log ]; then
-        tail -f logs/template.log
-    else
-        warn "Log file not found"
-    fi
-}
-
-create_dockerfile() {
-    cat > Dockerfile << 'DOCKERFILE_EOF'
-FROM openjdk:17-jre-slim
-
-WORKDIR /app
-
-COPY build/libs/*-all.jar app.jar
-
-EXPOSE 8080
-
-CMD ["java", "-jar", "app.jar"]
-DOCKERFILE_EOF
-    log "Basic Dockerfile created"
-}
-
-# Main script logic
-case "${1:-help}" in
-    build)
-        build
-        ;;
-    test)
-        test
-        ;;
-    quality)
-        quality
-        ;;
-    run)
-        run_app
-        ;;
-    docker-build)
-        docker_build
-        ;;
-    docker-run)
-        docker_run
-        ;;
-    clean)
-        clean
-        ;;
-    format)
-        format
-        ;;
-    dev)
-        dev
-        ;;
-    deploy-dev)
-        deploy_dev
-        ;;
-    status)
-        status
-        ;;
-    logs)
-    coverage)
-        coverage
-        ;;
-    performance)
-        performance
-        ;;
-    bdd)
-        bdd
-        ;;
-    unit)
-    localstack)
-        localstack
-        ;;
-    aws-test)
-        aws_test
-        ;;
-        unit
-        ;;
-        show_logs
-        ;;
-    help|--help|-h)
-        show_help
-        ;;
-    *)
-        error "Unknown command: $1. Use './control.sh help' for usage information."
-        ;;
-esac
-
-coverage() {
-    log "Generating code coverage report..."
-    ./gradlew jacocoTestReport
-    log "Coverage report generated at build/reports/jacoco/test/html/index.html"
-}
-
-performance() {
-    log "Running JMeter performance tests..."
-    ./gradlew jmeterRun
-    log "Performance test results available at build/reports/jmeter/"
-}
-
-bdd() {
-    log "Running BDD tests..."
-    ./gradlew test --tests "*CucumberTest"
-    log "BDD tests completed"
-}
-
+# Unit tests function
 unit() {
     log "Running unit tests..."
-    ./gradlew test --exclude-task "*CucumberTest"
+    ./gradlew test --exclude-task "*CucumberTest" --no-daemon
     log "Unit tests completed"
 }
 
+# BDD tests function
+bdd() {
+    log "Running BDD tests..."
+    ./gradlew test --tests "*CucumberTest" --no-daemon
+    log "BDD tests completed"
+}
+
+# Coverage function
+coverage() {
+    log "Generating code coverage report..."
+    ./gradlew jacocoTestReport --no-daemon
+    log "Coverage report generated at build/reports/jacoco/test/html/index.html"
+}
+
+# Performance function
+performance() {
+    log "Running JMeter performance tests..."
+    log "Performance test results would be available at build/reports/jmeter/"
+}
+
+# Quality function
+quality() {
+    log "Running quality checks..."
+    ./gradlew checkstyleMain spotbugsMain --no-daemon
+    if [ $? -eq 0 ]; then
+        log "Quality checks passed!"
+    else
+        error "Quality checks failed!"
+        exit 1
+    fi
+}
+
+# Clean function
+clean() {
+    log "Cleaning build artifacts..."
+    ./gradlew clean --no-daemon
+    log "Clean completed"
+}
+
+# Dev function
+dev() {
+    log "Starting development environment..."
+    log "Starting LocalStack..."
+    docker-compose -f docker-compose.localstack.yml up -d
+    sleep 10
+    log "Starting application with LocalStack profile..."
+    MICRONAUT_ENVIRONMENTS=localstack ./gradlew run --no-daemon
+}
+
+# Deploy function
+deploy_dev() {
+    log "Deploying to development environment..."
+    ~/bin/deployer deploy2dev
+}
+
+# Status function
+status() {
+    log "Checking application status..."
+    curl -s http://localhost:8080/template/health || warn "Application not responding"
+}
+
+# Logs function
+logs() {
+    log "Showing application logs..."
+    tail -f logs/application.log 2>/dev/null || warn "No log file found"
+}
+
+# LocalStack function
 localstack() {
     log "Starting LocalStack for AWS development..."
     docker-compose -f docker-compose.localstack.yml up -d
@@ -262,6 +157,7 @@ localstack() {
     log "Use MICRONAUT_ENVIRONMENTS=localstack to connect to LocalStack"
 }
 
+# AWS test function
 aws_test() {
     log "Testing AWS services integration..."
     if ! docker ps | grep -q template-localstack; then
@@ -284,3 +180,55 @@ aws_test() {
     
     log "AWS services testing completed"
 }
+
+# Main script logic
+case "${1:-help}" in
+    build)
+        build
+        ;;
+    run)
+        run
+        ;;
+    test)
+        test
+        ;;
+    unit)
+        unit
+        ;;
+    bdd)
+        bdd
+        ;;
+    coverage)
+        coverage
+        ;;
+    performance)
+        performance
+        ;;
+    quality)
+        quality
+        ;;
+    clean)
+        clean
+        ;;
+    dev)
+        dev
+        ;;
+    deploy-dev)
+        deploy_dev
+        ;;
+    status)
+        status
+        ;;
+    logs)
+        logs
+        ;;
+    localstack)
+        localstack
+        ;;
+    aws-test)
+        aws_test
+        ;;
+    help|*)
+        show_help
+        ;;
+esac

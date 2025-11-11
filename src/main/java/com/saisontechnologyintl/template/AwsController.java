@@ -5,7 +5,6 @@
  */
 package com.saisontechnologyintl.template;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
@@ -28,7 +27,6 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
 @Controller("/aws")
 @Tag(name = "AWS", description = "AWS SDK integration examples")
-@XRayEnabled
 public class AwsController {
 
   private static final Logger LOG = LoggerFactory.getLogger(AwsController.class);
