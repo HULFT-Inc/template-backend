@@ -76,6 +76,14 @@ Java Micronaut REST Service template for new developers.
 - **Performance Tests**: JMeter load testing
 - **Code Coverage**: JaCoCo with 80% minimum coverage
 
+## AWS SDK Integration
+- **S3**: Object storage operations with X-Ray tracing
+- **DynamoDB**: NoSQL database operations with X-Ray tracing
+- **SQS**: Message queue operations with X-Ray tracing
+- **SNS**: Notification service operations with X-Ray tracing
+- **X-Ray**: Distributed tracing for all AWS operations
+- **LocalStack**: Local AWS development environment
+
 ## Features
 - **API Documentation**: OpenAPI/Swagger UI available at `/template/swagger-ui`
 - **BDD Testing**: Cucumber tests for behavior verification

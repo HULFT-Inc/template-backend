@@ -55,6 +55,8 @@ show_help() {
   performance   Run JMeter performance tests
   bdd           Run BDD tests only
   unit          Run unit tests only
+  localstack    Start LocalStack for local AWS development
+  aws-test      Test AWS services integration
     echo "  help          Show this help message"
 }
 
@@ -209,6 +211,12 @@ case "${1:-help}" in
         bdd
         ;;
     unit)
+    localstack)
+        localstack
+        ;;
+    aws-test)
+        aws_test
+        ;;
         unit
         ;;
         show_logs
@@ -243,4 +251,36 @@ unit() {
     log "Running unit tests..."
     ./gradlew test --exclude-task "*CucumberTest"
     log "Unit tests completed"
+}
+
+localstack() {
+    log "Starting LocalStack for AWS development..."
+    docker-compose -f docker-compose.localstack.yml up -d
+    log "Waiting for LocalStack to be ready..."
+    sleep 10
+    log "LocalStack is ready at http://localhost:4566"
+    log "Use MICRONAUT_ENVIRONMENTS=localstack to connect to LocalStack"
+}
+
+aws_test() {
+    log "Testing AWS services integration..."
+    if ! docker ps | grep -q template-localstack; then
+        warn "LocalStack not running, starting it..."
+        localstack
+        sleep 15
+    fi
+    
+    log "Testing S3..."
+    curl -s http://localhost:8080/template/aws/s3/buckets || warn "S3 test failed"
+    
+    log "Testing DynamoDB..."
+    curl -s -X POST http://localhost:8080/template/aws/dynamodb/test || warn "DynamoDB test failed"
+    
+    log "Testing SQS..."
+    curl -s -X POST http://localhost:8080/template/aws/sqs/test || warn "SQS test failed"
+    
+    log "Testing SNS..."
+    curl -s -X POST http://localhost:8080/template/aws/sns/test || warn "SNS test failed"
+    
+    log "AWS services testing completed"
 }
