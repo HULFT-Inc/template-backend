@@ -136,5 +136,5 @@ All endpoints are served under `/template` context path.
 - **Java Micronaut**: Lightweight deployment service
 
 ## Deployment
-Uses VPC Lattice rapid deployment: `./control.sh deploy-predev`
+Uses VPC Lattice rapid deployment: `./control.sh deploy-predev` (Ohio region with automatic infrastructure setup)
 # GitHub Actions Test

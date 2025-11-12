@@ -4,10 +4,10 @@ set -e
 
 # Configuration
 PROFILE="predev"
-REGION="us-east-1"
+REGION="us-east-2"
 VPC_ID="vpc-12345678"  # Replace with actual VPC ID
 SUBNETS="subnet-12345678,subnet-87654321"  # Replace with actual subnet IDs
-IMAGE_URI="123456789012.dkr.ecr.us-east-1.amazonaws.com/template-backend:latest"
+IMAGE_URI="123456789012.dkr.ecr.us-east-2.amazonaws.com/template-backend:latest"
 
 echo "🚀 Starting rapid deployment to predev..."
 

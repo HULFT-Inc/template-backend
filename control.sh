@@ -314,20 +314,26 @@ docker_logs() {
 
 # Deployment functions
 deploy_predev() {
-    log "Deploying to predev environment with VPC Lattice..."
+    log "Deploying to predev environment with VPC Lattice in Ohio (us-east-2)..."
     
-    # Check if deployment parameters are set
-    if [[ -z "$VPC_ID" || -z "$SUBNETS" || -z "$IMAGE_URI" ]]; then
-        error "Missing deployment parameters. Set VPC_ID, SUBNETS, and IMAGE_URI environment variables"
-        log "Example:"
-        log "export VPC_ID=vpc-12345678"
-        log "export SUBNETS=subnet-12345678,subnet-87654321"
+    # Use automatic infrastructure setup
+    if [[ "$1" != "--manual" ]]; then
+        log "Using automatic infrastructure setup"
+        log "Setting up VPC, subnets, ECR, IAM roles, and security groups automatically"
+        log "Use --manual flag to provide your own infrastructure"
+        
         log "export IMAGE_URI=123456789012.dkr.ecr.us-east-1.amazonaws.com/template-backend:latest"
-        exit 1
+        cd deployment && ./rapid-deploy --setup-all && cd ..
     fi
     
     cd deployment
-    ./rapid-deploy --vpc-id "$VPC_ID" --subnets "$SUBNETS" --image-uri "$IMAGE_URI"
+    else
+        if [[ -z "$VPC_ID" || -z "$SUBNETS" || -z "$IMAGE_URI" ]]; then
+            error "Manual mode requires VPC_ID, SUBNETS, and IMAGE_URI environment variables"
+            exit 1
+        fi
+        ./rapid-deploy --vpc-id "$VPC_ID" --subnets "$SUBNETS" --image-uri "$IMAGE_URI"
+    fi
     cd ..
 }
 

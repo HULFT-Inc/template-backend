@@ -77,7 +77,7 @@ public class EcsService {
                       .options(
                           Map.of(
                               "awslogs-group", "/ecs/template-backend",
-                              "awslogs-region", "us-east-1",
+                              "awslogs-region", "us-east-2",
                               "awslogs-stream-prefix", "ecs"))
                       .build())
               .build();
@@ -91,7 +91,7 @@ public class EcsService {
                   .cpu("256")
                   .memory("512")
                   .containerDefinitions(containerDef)
-                  .executionRoleArn("arn:aws:iam::ACCOUNT:role/ecsTaskExecutionRole")
+                  .executionRoleArn("arn:aws:iam::" + System.getenv("AWS_ACCOUNT_ID") + ":role/ecsTaskExecutionRole")
                   .tags(
                       Tag.builder().key("Environment").value("predev").build(),
                       Tag.builder().key("Project").value("template-backend").build())
