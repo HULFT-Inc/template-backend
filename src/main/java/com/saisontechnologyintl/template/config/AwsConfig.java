@@ -10,14 +10,12 @@ import com.amazonaws.xray.AWSXRayRecorderBuilder;
 import com.amazonaws.xray.plugins.EC2Plugin;
 import com.amazonaws.xray.plugins.ECSPlugin;
 import com.amazonaws.xray.strategy.sampling.LocalizedSamplingStrategy;
+import com.saisontechnologyintl.template.factory.AwsClientFactory;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Value;
 import jakarta.annotation.PostConstruct;
-import java.net.URI;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.sns.SnsClient;
@@ -47,78 +45,32 @@ public class AwsConfig {
   }
 
   @Bean
-  public S3Client s3Client() {
-    var builder =
-        S3Client.builder()
-            .region(Region.of(region))
-            .credentialsProvider(DefaultCredentialsProvider.create())
-            .overrideConfiguration(
-                ClientOverrideConfiguration.builder()
-                    .addExecutionInterceptor(
-                        new com.amazonaws.xray.interceptors.TracingInterceptor())
-                    .build());
+  public AwsClientFactory awsClientFactory() {
+    ClientOverrideConfiguration clientConfig =
+        ClientOverrideConfiguration.builder()
+            .addExecutionInterceptor(new com.amazonaws.xray.interceptors.TracingInterceptor())
+            .build();
 
-    if (Boolean.TRUE.equals(localstackEnabled)) {
-      builder.endpointOverride(URI.create(localstackEndpoint));
-    }
-
-    return builder.build();
+    return new AwsClientFactory(region, localstackEnabled, localstackEndpoint, clientConfig);
   }
 
   @Bean
-  public DynamoDbClient dynamoDbClient() {
-    var builder =
-        DynamoDbClient.builder()
-            .region(Region.of(region))
-            .credentialsProvider(DefaultCredentialsProvider.create())
-            .overrideConfiguration(
-                ClientOverrideConfiguration.builder()
-                    .addExecutionInterceptor(
-                        new com.amazonaws.xray.interceptors.TracingInterceptor())
-                    .build());
-
-    if (Boolean.TRUE.equals(localstackEnabled)) {
-      builder.endpointOverride(URI.create(localstackEndpoint));
-    }
-
-    return builder.build();
+  public S3Client s3Client(AwsClientFactory factory) {
+    return factory.createS3Client();
   }
 
   @Bean
-  public SqsClient sqsClient() {
-    var builder =
-        SqsClient.builder()
-            .region(Region.of(region))
-            .credentialsProvider(DefaultCredentialsProvider.create())
-            .overrideConfiguration(
-                ClientOverrideConfiguration.builder()
-                    .addExecutionInterceptor(
-                        new com.amazonaws.xray.interceptors.TracingInterceptor())
-                    .build());
-
-    if (Boolean.TRUE.equals(localstackEnabled)) {
-      builder.endpointOverride(URI.create(localstackEndpoint));
-    }
-
-    return builder.build();
+  public DynamoDbClient dynamoDbClient(AwsClientFactory factory) {
+    return factory.createDynamoDbClient();
   }
 
   @Bean
-  public SnsClient snsClient() {
-    var builder =
-        SnsClient.builder()
-            .region(Region.of(region))
-            .credentialsProvider(DefaultCredentialsProvider.create())
-            .overrideConfiguration(
-                ClientOverrideConfiguration.builder()
-                    .addExecutionInterceptor(
-                        new com.amazonaws.xray.interceptors.TracingInterceptor())
-                    .build());
+  public SqsClient sqsClient(AwsClientFactory factory) {
+    return factory.createSqsClient();
+  }
 
-    if (Boolean.TRUE.equals(localstackEnabled)) {
-      builder.endpointOverride(URI.create(localstackEndpoint));
-    }
-
-    return builder.build();
+  @Bean
+  public SnsClient snsClient(AwsClientFactory factory) {
+    return factory.createSnsClient();
   }
 }

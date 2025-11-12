@@ -76,6 +76,13 @@ Java Micronaut REST Service template for new developers.
 - **Performance Tests**: JMeter load testing
 - **Code Coverage**: JaCoCo with 80% minimum coverage
 
+## Design Patterns (Gang of Four)
+- **Factory Pattern**: AWS client creation with configuration
+- **Strategy Pattern**: Pluggable AWS operation algorithms
+- **Observer Pattern**: Metrics notification system
+- **Command Pattern**: AWS operations with undo capability
+- **Singleton Pattern**: Application configuration management
+
 ## AWS SDK Integration
 - **S3**: Object storage operations with X-Ray tracing
 - **DynamoDB**: NoSQL database operations with X-Ray tracing
