@@ -47,7 +47,11 @@ show_help() {
     echo "  localstack    Start LocalStack for local AWS development"
     echo "  aws-test      Test AWS services integration"
   autofix       Automatically fix code quality issues    echo "  help          Show this help message"
-}
+  docker-build  Build Docker image
+  docker-up     Start all services with Docker
+  docker-dev    Start development environment with hot reload
+  docker-down   Stop all Docker services
+  docker-logs   Show Docker logs}
 
 # Build function
 build() {
@@ -247,8 +251,57 @@ case "${1:-help}" in
         ;;
     autofix)
         autofix
+        ;;    docker-build)
+        docker_build
+        ;;
+    docker-up)
+        docker_up
+        ;;
+    docker-dev)
+        docker_dev
+        ;;
+    docker-down)
+        docker_down
+        ;;
+    docker-logs)
+        docker_logs
         ;;
     help|*)
         show_help
         ;;
 esac
+
+# Docker functions
+docker_build() {
+    log "Building Docker image..."
+    docker build -t template-backend:latest .
+    if [ $? -eq 0 ]; then
+        log "Docker image built successfully!"
+    else
+        error "Docker build failed!"
+        exit 1
+    fi
+}
+
+docker_up() {
+    log "Starting all services with Docker..."
+    docker-compose up -d
+    log "Services started. Application will be available at http://localhost:8080/template"
+    log "Use 'docker-compose logs -f app' to follow application logs"
+}
+
+docker_dev() {
+    log "Starting development environment with hot reload..."
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+}
+
+docker_down() {
+    log "Stopping all Docker services..."
+    docker-compose down
+    log "All services stopped"
+}
+
+docker_logs() {
+    log "Showing Docker logs..."
+    docker-compose logs -f
+}

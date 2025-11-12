@@ -91,6 +91,13 @@ Java Micronaut REST Service template for new developers.
 - **X-Ray**: Distributed tracing for all AWS operations
 - **LocalStack**: Local AWS development environment
 
+## Docker Configuration
+- **Multi-stage build**: Optimized production images
+- **Development environment**: Hot reload with docker-compose
+- **Production ready**: Resource limits and health checks
+- **Service stack**: PostgreSQL, LocalStack, Redis integration
+- **Nginx proxy**: Load balancing and SSL termination
+
 ## Features
 - **API Documentation**: OpenAPI/Swagger UI available at `/template/swagger-ui`
 - **BDD Testing**: Cucumber tests for behavior verification

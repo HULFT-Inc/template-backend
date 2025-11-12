@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: template-app
+    ports:
+      - "8080:8080"
+    environment:
+      - MICRONAUT_ENVIRONMENTS=docker
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    depends_on:
+      - postgres
+      - localstack
+    networks:
+      - template-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: template-postgres
+    environment:
+      - POSTGRES_DB=template
+      - POSTGRES_USER=template
+      - POSTGRES_PASSWORD=template123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - template-network
+    restart: unless-stopped
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: template-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,dynamodb,sqs,sns,xray
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - XRAY_ENABLED=1
+    volumes:
+      - localstack_data:/tmp/localstack
+      - ./localstack-init:/etc/localstack/init/ready.d
+    networks:
+      - template-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: template-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - template-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  localstack_data:
+  redis_data:
+
+networks:
+  template-network:
+    driver: bridge
