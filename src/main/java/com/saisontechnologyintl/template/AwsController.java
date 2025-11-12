@@ -13,8 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
@@ -25,11 +24,10 @@ import software.amazon.awssdk.services.sns.model.PublishRequest;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
+@Slf4j
 @Controller("/aws")
 @Tag(name = "AWS", description = "AWS SDK integration examples")
 public class AwsController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(AwsController.class);
 
   @Inject private S3Client s3Client;
   @Inject private DynamoDbClient dynamoDbClient;
@@ -39,16 +37,16 @@ public class AwsController {
   @Get("/s3/buckets")
   @Operation(summary = "List S3 buckets", description = "Lists all S3 buckets")
   public Map<String, Object> listS3Buckets() {
-    LOG.info("Listing S3 buckets");
+    log.info("Listing S3 buckets");
     try {
       ListBucketsResponse response = s3Client.listBuckets();
       Map<String, Object> result = new HashMap<>();
       result.put("buckets", response.buckets().size());
       result.put("status", "success");
-      LOG.info("Found {} S3 buckets", response.buckets().size());
+      log.info("Found {} S3 buckets", response.buckets().size());
       return result;
     } catch (Exception e) {
-      LOG.error("Error listing S3 buckets", e);
+      log.error("Error listing S3 buckets", e);
       Map<String, Object> result = new HashMap<>();
       result.put("error", e.getMessage());
       result.put("status", "error");
@@ -59,7 +57,7 @@ public class AwsController {
   @Post("/dynamodb/test")
   @Operation(summary = "Test DynamoDB", description = "Creates a test item in DynamoDB")
   public Map<String, Object> testDynamoDB() {
-    LOG.info("Testing DynamoDB connection");
+    log.info("Testing DynamoDB connection");
     try {
       Map<String, AttributeValue> item = new HashMap<>();
       item.put("id", AttributeValue.builder().s("test-" + System.currentTimeMillis()).build());
@@ -76,10 +74,10 @@ public class AwsController {
       Map<String, Object> result = new HashMap<>();
       result.put("status", "success");
       result.put("message", "Item created in DynamoDB");
-      LOG.info("Successfully created item in DynamoDB");
+      log.info("Successfully created item in DynamoDB");
       return result;
     } catch (Exception e) {
-      LOG.error("Error testing DynamoDB", e);
+      log.error("Error testing DynamoDB", e);
       Map<String, Object> result = new HashMap<>();
       result.put("error", e.getMessage());
       result.put("status", "error");
@@ -90,7 +88,7 @@ public class AwsController {
   @Post("/sqs/test")
   @Operation(summary = "Test SQS", description = "Sends a test message to SQS")
   public Map<String, Object> testSQS() {
-    LOG.info("Testing SQS connection");
+    log.info("Testing SQS connection");
     try {
       SendMessageRequest request =
           SendMessageRequest.builder()
@@ -103,10 +101,10 @@ public class AwsController {
       Map<String, Object> result = new HashMap<>();
       result.put("status", "success");
       result.put("message", "Message sent to SQS");
-      LOG.info("Successfully sent message to SQS");
+      log.info("Successfully sent message to SQS");
       return result;
     } catch (Exception e) {
-      LOG.error("Error testing SQS", e);
+      log.error("Error testing SQS", e);
       Map<String, Object> result = new HashMap<>();
       result.put("error", e.getMessage());
       result.put("status", "error");
@@ -117,7 +115,7 @@ public class AwsController {
   @Post("/sns/test")
   @Operation(summary = "Test SNS", description = "Publishes a test message to SNS")
   public Map<String, Object> testSNS() {
-    LOG.info("Testing SNS connection");
+    log.info("Testing SNS connection");
     try {
       PublishRequest request =
           PublishRequest.builder()
@@ -130,10 +128,10 @@ public class AwsController {
       Map<String, Object> result = new HashMap<>();
       result.put("status", "success");
       result.put("message", "Message published to SNS");
-      LOG.info("Successfully published message to SNS");
+      log.info("Successfully published message to SNS");
       return result;
     } catch (Exception e) {
-      LOG.error("Error testing SNS", e);
+      log.error("Error testing SNS", e);
       Map<String, Object> result = new HashMap<>();
       result.put("error", e.getMessage());
       result.put("status", "error");

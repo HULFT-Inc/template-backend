@@ -23,26 +23,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller("/users")
 @Tag(name = "Users", description = "User management operations")
+@RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
-
-  @Inject private UserService userService;
+  @Inject private final UserService userService;
 
   @Post
   @Operation(summary = "Create user", description = "Creates a new user")
   public HttpResponse<User> createUser(@Body User user) {
-    LOG.info("Creating new user: {}", user.getEmail());
+    log.info("Creating new user: {}", user.getEmail());
     try {
       User createdUser = userService.createUser(user);
       return HttpResponse.created(createdUser);
     } catch (Exception e) {
-      LOG.error("Error creating user", e);
+      log.error("Error creating user", e);
       return HttpResponse.badRequest();
     }
   }
@@ -50,7 +50,7 @@ public class UserController {
   @Get("/{id}")
   @Operation(summary = "Get user by ID", description = "Retrieves a user by their ID")
   public HttpResponse<User> getUser(@PathVariable Long id) {
-    LOG.debug("Getting user by id: {}", id);
+    log.debug("Getting user by id: {}", id);
     Optional<User> user = userService.findById(id);
     return user.map(HttpResponse::ok).orElse(HttpResponse.notFound());
   }
@@ -59,29 +59,29 @@ public class UserController {
   @Operation(summary = "Get all users", description = "Retrieves all users or search by name")
   public List<User> getAllUsers(@QueryValue Optional<String> search) {
     if (search.isPresent()) {
-      LOG.debug("Searching users by name: {}", search.get());
+      log.debug("Searching users by name: {}", search.get());
       return userService.searchByName(search.get());
     }
-    LOG.debug("Getting all users");
+    log.debug("Getting all users");
     return userService.getAllUsers();
   }
 
   @Get("/active")
   @Operation(summary = "Get active users", description = "Retrieves all active users")
   public List<User> getActiveUsers() {
-    LOG.debug("Getting active users");
+    log.debug("Getting active users");
     return userService.findAllActiveUsers();
   }
 
   @Put("/{id}")
   @Operation(summary = "Update user", description = "Updates an existing user")
   public HttpResponse<User> updateUser(@PathVariable Long id, @Body User user) {
-    LOG.info("Updating user with id: {}", id);
+    log.info("Updating user with id: {}", id);
     try {
       User updatedUser = userService.updateUser(id, user);
       return HttpResponse.ok(updatedUser);
     } catch (RuntimeException e) {
-      LOG.error("Error updating user", e);
+      log.error("Error updating user", e);
       return HttpResponse.notFound();
     }
   }
@@ -89,7 +89,7 @@ public class UserController {
   @Delete("/{id}")
   @Operation(summary = "Deactivate user", description = "Deactivates a user (soft delete)")
   public HttpResponse<Map<String, Object>> deactivateUser(@PathVariable Long id) {
-    LOG.info("Deactivating user with id: {}", id);
+    log.info("Deactivating user with id: {}", id);
     try {
       userService.deactivateUser(id);
       Map<String, Object> response = new HashMap<>();
@@ -97,7 +97,7 @@ public class UserController {
       response.put("id", id);
       return HttpResponse.ok(response);
     } catch (RuntimeException e) {
-      LOG.error("Error deactivating user", e);
+      log.error("Error deactivating user", e);
       return HttpResponse.notFound();
     }
   }
@@ -105,7 +105,7 @@ public class UserController {
   @Get("/stats")
   @Operation(summary = "User statistics", description = "Get user statistics")
   public Map<String, Object> getUserStats() {
-    LOG.debug("Getting user statistics");
+    log.debug("Getting user statistics");
     Map<String, Object> stats = new HashMap<>();
     stats.put("totalUsers", userService.getAllUsers().size());
     stats.put("activeUsers", userService.getActiveUserCount());

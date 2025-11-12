@@ -11,21 +11,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller("/docker")
 @Tag(name = "Docker", description = "Docker container management endpoints")
 public class DockerController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(DockerController.class);
 
   @Get("/health")
   @Operation(
       summary = "Docker health check",
       description = "Detailed health check for Docker containers")
   public Map<String, Object> dockerHealth() {
-    LOG.info("Docker health check requested");
+    log.info("Docker health check requested");
 
     Map<String, Object> health = new HashMap<>();
     health.put("status", "UP");
@@ -46,7 +44,7 @@ public class DockerController {
   @Get("/info")
   @Operation(summary = "Container info", description = "Container runtime information")
   public Map<String, Object> containerInfo() {
-    LOG.info("Container info requested");
+    log.info("Container info requested");
 
     Map<String, Object> info = new HashMap<>();
     info.put("java.version", System.getProperty("java.version"));

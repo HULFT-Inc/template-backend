@@ -47,7 +47,7 @@ class UserRepositoryTest implements TestPropertyProvider {
   @DisplayName("Should save and find user by email")
   void shouldSaveAndFindUserByEmail() {
     // Given
-    User user = new User("Test", "User", "test@example.com");
+    User user = User.builder().firstName("Test").lastName("User").email("test@example.com").build();
 
     // When
     User savedUser = userRepository.save(user);
@@ -63,9 +63,21 @@ class UserRepositoryTest implements TestPropertyProvider {
   @DisplayName("Should find active users")
   void shouldFindActiveUsers() {
     // Given
-    User activeUser = new User("Active", "User", "active@example.com");
+    User activeUser =
+        User.builder()
+            .firstName("Active")
+            .lastName("User")
+            .email("active@example.com")
+            .active(true)
+            .build();
     activeUser.setActive(true);
-    User inactiveUser = new User("Inactive", "User", "inactive@example.com");
+    User inactiveUser =
+        User.builder()
+            .firstName("Inactive")
+            .lastName("User")
+            .email("inactive@example.com")
+            .active(false)
+            .build();
     inactiveUser.setActive(false);
 
     userRepository.save(activeUser);
@@ -83,9 +95,9 @@ class UserRepositoryTest implements TestPropertyProvider {
   @DisplayName("Should search users by name")
   void shouldSearchUsersByName() {
     // Given
-    User user1 = new User("John", "Doe", "john@example.com");
-    User user2 = new User("Jane", "Doe", "jane@example.com");
-    User user3 = new User("Bob", "Smith", "bob@example.com");
+    User user1 = User.builder().firstName("John").lastName("Doe").email("john@example.com").build();
+    User user2 = User.builder().firstName("Jane").lastName("Doe").email("jane@example.com").build();
+    User user3 = User.builder().firstName("Bob").lastName("Smith").email("bob@example.com").build();
 
     userRepository.save(user1);
     userRepository.save(user2);

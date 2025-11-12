@@ -21,16 +21,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
 
+@Slf4j
 @Controller("/patterns")
 @Tag(name = "Design Patterns", description = "Gang of Four design patterns examples")
 public class PatternController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(PatternController.class);
 
   @Inject private S3Client s3Client;
   @Inject private DynamoDbClient dynamoDbClient;
@@ -50,7 +48,7 @@ public class PatternController {
       summary = "Singleton pattern",
       description = "Demonstrates Singleton pattern with application config")
   public Map<String, Object> singletonExample() {
-    LOG.info("Demonstrating Singleton pattern");
+    log.info("Demonstrating Singleton pattern");
 
     ApplicationConfig config = ApplicationConfig.getInstance();
 
@@ -70,7 +68,7 @@ public class PatternController {
       summary = "Strategy pattern",
       description = "Demonstrates Strategy pattern with AWS operations")
   public Map<String, Object> strategyExample() {
-    LOG.info("Demonstrating Strategy pattern");
+    log.info("Demonstrating Strategy pattern");
 
     var s3Strategy = new S3OperationStrategy(s3Client);
     var dynamoStrategy = new DynamoDbOperationStrategy(dynamoDbClient);
@@ -90,7 +88,7 @@ public class PatternController {
       summary = "Command pattern",
       description = "Demonstrates Command pattern with AWS operations")
   public Map<String, Object> commandExample() {
-    LOG.info("Demonstrating Command pattern");
+    log.info("Demonstrating Command pattern");
 
     var s3Strategy = new S3OperationStrategy(s3Client);
     var s3Command = new S3ListBucketsCommand(s3Strategy);
@@ -112,7 +110,7 @@ public class PatternController {
       summary = "Observer pattern",
       description = "Demonstrates Observer pattern with metrics")
   public Map<String, Object> observerExample() {
-    LOG.info("Demonstrating Observer pattern");
+    log.info("Demonstrating Observer pattern");
 
     Map<String, Object> result = new HashMap<>();
     result.put("pattern", "Observer");

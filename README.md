@@ -91,6 +91,20 @@ Java Micronaut REST Service template for new developers.
 - **X-Ray**: Distributed tracing for all AWS operations
 - **LocalStack**: Local AWS development environment
 
+## Lombok Integration
+- **@Data**: Automatic getters, setters, toString, equals, hashCode
+- **@Builder**: Builder pattern for object creation
+- **@Slf4j**: Automatic logger injection
+- **@RequiredArgsConstructor**: Constructor injection
+- **Reduced boilerplate**: Clean, readable code
+
+## Logback Configuration
+- **Console logging**: Colored output for development
+- **File logging**: Rolling file appenders with size/time limits
+- **JSON logging**: Structured logging for production
+- **AWS CloudWatch**: Direct log streaming to CloudWatch
+- **Async logging**: High-performance async appenders
+
 ## Database Integration
 - **JPA/Hibernate**: Entity management with PostgreSQL
 - **User entity**: Complete CRUD operations example

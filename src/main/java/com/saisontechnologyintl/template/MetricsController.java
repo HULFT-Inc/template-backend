@@ -12,14 +12,12 @@ import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller("/metrics")
 @Tag(name = "Metrics", description = "Custom metrics operations")
 public class MetricsController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MetricsController.class);
 
   private final Counter requestCounter;
   private final Timer requestTimer;
@@ -36,12 +34,12 @@ public class MetricsController {
       return requestTimer.recordCallable(
           () -> {
             requestCounter.increment();
-            LOG.info("Custom metrics generated - counter incremented");
-            LOG.debug("Request timer recorded for metrics test endpoint");
+            log.info("Custom metrics generated - counter incremented");
+            log.debug("Request timer recorded for metrics test endpoint");
             return "Metrics recorded and logged to CloudWatch";
           });
     } catch (Exception e) {
-      LOG.error("Error recording metrics", e);
+      log.error("Error recording metrics", e);
       return "Error recording metrics";
     }
   }

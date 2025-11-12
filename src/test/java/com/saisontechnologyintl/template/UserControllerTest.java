@@ -47,7 +47,7 @@ class UserControllerTest implements TestPropertyProvider {
   @Test
   @DisplayName("Should create and retrieve user")
   void shouldCreateAndRetrieveUser() {
-    User user = new User("Test", "User", "test@example.com");
+    User user = User.builder().firstName("Test").lastName("User").email("test@example.com").build();
 
     // Create user
     Integer userId =
