@@ -52,7 +52,8 @@ show_help() {
   docker-dev    Start development environment with hot reload
   docker-down   Stop all Docker services
   docker-logs   Show Docker logs}
-
+  deploy-predev Deploy to predev using VPC Lattice
+  deploy-status Check deployment status
 # Build function
 build() {
     log "Building application..."
@@ -264,7 +265,12 @@ case "${1:-help}" in
         docker_down
         ;;
     docker-logs)
-        docker_logs
+    deploy-predev)
+        deploy_predev
+        ;;
+    deploy-status)
+        deploy_status
+        ;;        docker_logs
         ;;
     help|*)
         show_help
@@ -304,4 +310,34 @@ docker_down() {
 docker_logs() {
     log "Showing Docker logs..."
     docker-compose logs -f
+}
+
+# Deployment functions
+deploy_predev() {
+    log "Deploying to predev environment with VPC Lattice..."
+    
+    # Check if deployment parameters are set
+    if [[ -z "$VPC_ID" || -z "$SUBNETS" || -z "$IMAGE_URI" ]]; then
+        error "Missing deployment parameters. Set VPC_ID, SUBNETS, and IMAGE_URI environment variables"
+        log "Example:"
+        log "export VPC_ID=vpc-12345678"
+        log "export SUBNETS=subnet-12345678,subnet-87654321"
+        log "export IMAGE_URI=123456789012.dkr.ecr.us-east-1.amazonaws.com/template-backend:latest"
+        exit 1
+    fi
+    
+    cd deployment
+    ./rapid-deploy --vpc-id "$VPC_ID" --subnets "$SUBNETS" --image-uri "$IMAGE_URI"
+    cd ..
+}
+
+deploy_status() {
+    log "Checking deployment status..."
+    cd deployment
+    ./gradlew run &
+    DEPLOYER_PID=$!
+    sleep 5
+    curl -s http://localhost:8081/deploy/status | jq . || echo "Deployer not responding"
+    kill $DEPLOYER_PID 2>/dev/null || true
+    cd ..
 }

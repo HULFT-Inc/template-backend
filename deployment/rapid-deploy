@@ -1,0 +1,109 @@
+#!/bin/bash
+
+set -e
+
+PROFILE="${AWS_PROFILE:-predev}"
+REGION="${AWS_REGION:-us-east-1}"
+
+usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo "Options:"
+    echo "  --vpc-id VPC_ID          VPC ID for deployment"
+    echo "  --subnets SUBNET_IDS     Comma-separated subnet IDs"
+    echo "  --image-uri IMAGE_URI    ECR image URI"
+    echo "  --profile PROFILE        AWS profile (default: predev)"
+    echo "  --region REGION          AWS region (default: us-east-1)"
+    echo "  --help                   Show this help"
+}
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --vpc-id)
+            VPC_ID="$2"
+            shift 2
+            ;;
+        --subnets)
+            SUBNETS="$2"
+            shift 2
+            ;;
+        --image-uri)
+            IMAGE_URI="$2"
+            shift 2
+            ;;
+        --profile)
+            PROFILE="$2"
+            shift 2
+            ;;
+        --region)
+            REGION="$2"
+            shift 2
+            ;;
+        --help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+# Validate required parameters
+if [[ -z "$VPC_ID" || -z "$SUBNETS" || -z "$IMAGE_URI" ]]; then
+    echo "Error: Missing required parameters"
+    usage
+    exit 1
+fi
+
+echo "🚀 AWS VPC Lattice Rapid Deployment"
+echo "Profile: $PROFILE"
+echo "Region: $REGION"
+echo "VPC ID: $VPC_ID"
+echo "Subnets: $SUBNETS"
+echo "Image: $IMAGE_URI"
+echo ""
+
+# Start deployer in background
+echo "🔧 Starting deployer service..."
+./gradlew run > deployer.log 2>&1 &
+DEPLOYER_PID=$!
+
+# Wait for service to start
+echo "⏳ Waiting for deployer to start..."
+for i in {1..30}; do
+    if curl -s http://localhost:8081/deploy/status > /dev/null 2>&1; then
+        echo "✅ Deployer is ready"
+        break
+    fi
+    sleep 2
+    if [ $i -eq 30 ]; then
+        echo "❌ Deployer failed to start"
+        kill $DEPLOYER_PID 2>/dev/null || true
+        exit 1
+    fi
+done
+
+# Trigger deployment
+echo "🚀 Triggering deployment..."
+RESPONSE=$(curl -s -X POST "http://localhost:8081/deploy/predev?vpcId=$VPC_ID&imageUri=$IMAGE_URI&subnets=$SUBNETS" \
+    -H "Content-Type: application/json")
+
+echo "📋 Deployment Response:"
+echo "$RESPONSE" | jq . 2>/dev/null || echo "$RESPONSE"
+
+# Check deployment status
+STATUS=$(echo "$RESPONSE" | jq -r '.status' 2>/dev/null || echo "UNKNOWN")
+
+# Cleanup
+kill $DEPLOYER_PID 2>/dev/null || true
+
+if [ "$STATUS" = "SUCCESS" ]; then
+    echo "✅ Deployment completed successfully!"
+    exit 0
+else
+    echo "❌ Deployment failed!"
+    exit 1
+fi

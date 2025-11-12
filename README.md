@@ -128,6 +128,13 @@ Java Micronaut REST Service template for new developers.
 ## Context Path
 All endpoints are served under `/template` context path.
 
+## AWS VPC Lattice Deployment
+- **Rapid deployment**: Single command deployment to predev
+- **VPC Lattice**: Service mesh with service networks and target groups
+- **ECS Fargate**: Serverless container deployment
+- **AWS SDK v2**: Modern AWS integration with profile support
+- **Java Micronaut**: Lightweight deployment service
+
 ## Deployment
-Uses standard deployment tool: `~/bin/deployer deploy2dev`
+Uses VPC Lattice rapid deployment: `./control.sh deploy-predev`
 # GitHub Actions Test

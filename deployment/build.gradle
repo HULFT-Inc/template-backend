@@ -1,0 +1,45 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.2.1"
+}
+
+version = "1.0"
+group = "com.saisontechnologyintl.deployer"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+    annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
+    
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("software.amazon.awssdk:vpclattice")
+    implementation("software.amazon.awssdk:ecs")
+    implementation("software.amazon.awssdk:ecr")
+    implementation("software.amazon.awssdk:ec2")
+    implementation("software.amazon.awssdk:iam")
+    implementation("software.amazon.awssdk:cloudwatchlogs")
+    implementation("software.amazon.awssdk:servicediscovery")
+    
+    runtimeOnly("ch.qos.logback:logback-classic")
+}
+
+application {
+    mainClass.set("com.saisontechnologyintl.deployer.DeployerApplication")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+micronaut {
+    version("4.2.1")    runtime("netty")
+    processing {
+        incremental(true)
+        annotations("com.saisontechnologyintl.deployer.*")
+    }
+}
