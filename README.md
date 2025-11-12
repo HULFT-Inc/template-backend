@@ -91,6 +91,13 @@ Java Micronaut REST Service template for new developers.
 - **X-Ray**: Distributed tracing for all AWS operations
 - **LocalStack**: Local AWS development environment
 
+## Database Integration
+- **JPA/Hibernate**: Entity management with PostgreSQL
+- **User entity**: Complete CRUD operations example
+- **Repository pattern**: Micronaut Data JPA repositories
+- **Testcontainers**: Isolated database testing
+- **Database migrations**: SQL scripts for schema management
+
 ## Docker Configuration
 - **Multi-stage build**: Optimized production images
 - **Development environment**: Hot reload with docker-compose

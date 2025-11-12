@@ -16,7 +16,14 @@ services:
       - localstack
     networks:
       - template-network
-    volumes:
+    command: |
+      bash -c "
+      until pg_isready -h postgres -p 5432 -U template; do
+        echo Waiting for postgres...
+        sleep 2
+      done
+      psql -h postgres -U template -d template -f /docker-entrypoint-initdb.d/init.sql || true
+      "    volumes:
       - ./logs:/app/logs
     restart: unless-stopped
 
@@ -29,9 +36,16 @@ services:
       - POSTGRES_PASSWORD=template123
     ports:
       - "5432:5432"
-    volumes:
+    command: |
+      bash -c "
+      until pg_isready -h postgres -p 5432 -U template; do
+        echo Waiting for postgres...
+        sleep 2
+      done
+      psql -h postgres -U template -d template -f /docker-entrypoint-initdb.d/init.sql || true
+      "    volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro    networks:
       - template-network
     restart: unless-stopped
 
@@ -45,7 +59,14 @@ services:
       - DEBUG=1
       - DATA_DIR=/tmp/localstack/data
       - XRAY_ENABLED=1
-    volumes:
+    command: |
+      bash -c "
+      until pg_isready -h postgres -p 5432 -U template; do
+        echo Waiting for postgres...
+        sleep 2
+      done
+      psql -h postgres -U template -d template -f /docker-entrypoint-initdb.d/init.sql || true
+      "    volumes:
       - localstack_data:/tmp/localstack
       - ./localstack-init:/etc/localstack/init/ready.d
     networks:
@@ -57,13 +78,27 @@ services:
     container_name: template-redis
     ports:
       - "6379:6379"
-    volumes:
+    command: |
+      bash -c "
+      until pg_isready -h postgres -p 5432 -U template; do
+        echo Waiting for postgres...
+        sleep 2
+      done
+      psql -h postgres -U template -d template -f /docker-entrypoint-initdb.d/init.sql || true
+      "    volumes:
       - redis_data:/data
     networks:
       - template-network
     restart: unless-stopped
 
-volumes:
+    command: |
+      bash -c "
+      until pg_isready -h postgres -p 5432 -U template; do
+        echo Waiting for postgres...
+        sleep 2
+      done
+      psql -h postgres -U template -d template -f /docker-entrypoint-initdb.d/init.sql || true
+      "volumes:
   postgres_data:
   localstack_data:
   redis_data:
