@@ -265,12 +265,13 @@ case "${1:-help}" in
         docker_down
         ;;
     docker-logs)
+        docker_logs
+        ;;
     deploy-predev)
         deploy_predev
         ;;
     deploy-status)
         deploy_status
-        ;;        docker_logs
         ;;
     help|*)
         show_help
