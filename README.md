@@ -1,6 +1,17 @@
-# Example Template - Center of Excellence
+# Change Management Record System - Center of Excellence
 
-Java Micronaut REST Service template for new developers.
+Java Micronaut REST Service for tracking changes to business documents across organizations.
+
+## Domain Model
+- **Organizations**: GPS, ACME (identified by shortcodes)
+- **Document Types**: PO, INVOICE, CONTRACT, RECEIPT, OTHER
+- **Change Records**: Track field-level changes with audit trail
+
+## Use Cases
+- Track PO line item modifications
+- Monitor invoice due date changes
+- Audit contract amendments
+- Compliance reporting by organization
 
 ## Package Structure Requirements
 - **MANDATORY**: Use company domain `com.saisontechnologyintl.<project-name>`
@@ -66,8 +77,15 @@ Java Micronaut REST Service template for new developers.
 
 ## Endpoints
 - `GET /template/health` - Health check endpoint
-- `GET /template/metrics/test - Test custom metrics
+- `GET /template/metrics/test` - Test custom metrics
 - `GET /template/swagger-ui` - API documentation
+
+### Change Management API
+- `POST /template/changes` - Record a change
+- `GET /template/changes/org/{shortcode}` - Get changes by organization (GPS, ACME)
+- `GET /template/changes/type/{documentType}` - Get changes by document type (PO, INVOICE)
+- `GET /template/changes/org/{shortcode}/type/{documentType}` - Get changes by org and type
+- `GET /template/changes/document/{documentId}` - Get all changes for a document
 
 ## Testing
 - **Unit Tests**: JUnit 5 with Mockito and AssertJ
