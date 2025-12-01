@@ -13,6 +13,12 @@ Java Micronaut REST Service template for new developers.
 - **Deployment:** AWS ALB + VPC Lattice
 - **Build:** Gradle with Shadow plugin
 
+## CI/CD Pipeline
+- **CI Pipeline**: Build, test, quality gates (Checkstyle, SpotBugs, ArchUnit)
+- **CD Pipeline**: Docker build, ECR push, ECS deployment
+- **Security Pipeline**: OWASP, CodeQL, Trivy vulnerability scanning
+- **Branch Protection**: Git Flow enforcement, JIRA commit validation
+
 ## Quality Standards
 - ✅ 0% Checkstyle violations
 - ✅ 0% SpotBugs violations  
@@ -22,36 +28,45 @@ Java Micronaut REST Service template for new developers.
 ## Quick Start
 ```bash
 # Build project
-make build
+./control.sh build
 
 # Run locally
-make run
+./control.sh run
 
 # Run quality checks
-make check
+./control.sh quality
+
+# Start development environment
+./control.sh dev
 
 # Deploy to dev
-make deploy-dev
+./control.sh deploy-dev
 ```
 
 ## Development Workflow
-1. Start timetracker: `timetracker start template-backend`
+1. Start feature: `git flow feature start feature-name`
 2. Make changes
-3. Build: `make build`
-4. Auto-commit on success: `git add . && git commit -m "Build successful - $(date '+%Y-%m-%d %H:%M:%S')"`
-5. Log time: `timetracker log --q-time X --personal-time Y --category coding`
+3. Build: `./control.sh build`
+4. Auto-commit on success: `git add . && git commit -m "JIRA-XXX: feat: description - $(date '+%Y-%m-%d %H:%M:%S')"`
+5. Finish feature: `git flow feature finish feature-name`
 
-## Time Tracking Summary
-Project: Example Template
-Total Time: [X hours]
-Q Developer Time: [X hours] 
-Personal Time: [X hours]
-Estimated Without Q: [X hours]
-Efficiency Gain: [X%]
-Categories: coding([X]h), debugging([X]h), meetings([X]h), research([X]h)
+## Amazon Q Developer Rules
+- **JIRA Traceability**: All commits must start with JIRA-XXX:
+- **Auto-commit**: Commit after every successful build
+- **Quality Gates**: 0% violations required for all quality tools
+- **Git Flow**: Mandatory branching model for all changes
+
+## Git Flow Requirements
+- **MANDATORY**: Use Git Flow branching model
+- **Feature branches**: All changes via `git flow feature start/finish`
+- **Semantic commits**: Use conventional commit messages
+- **No direct commits**: Never commit directly to main/develop
+- See [GITFLOW.md](GITFLOW.md) for complete workflow
+
 
 ## Endpoints
 - `GET /template/health` - Health check endpoint
+- `GET /template/metrics/test - Test custom metrics
 - `GET /template/swagger-ui` - API documentation
 
 ## Features

@@ -4,6 +4,7 @@ plugins {
     id("checkstyle")
     id("com.github.spotbugs") version "5.2.5"
     id("com.diffplug.spotless") version "6.23.3"
+    id("org.owasp.dependencycheck") version "8.4.2"
 }
 
 version = "0.1"
@@ -30,6 +31,9 @@ dependencies {
     implementation("software.amazon.awssdk:sns")
     implementation("io.micronaut.openapi:micronaut-openapi")
     implementation("io.swagger.core.v3:swagger-annotations")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-cloudwatch")
+    implementation("ca.pjer:logback-awslogs-appender:1.6.0")
     
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.postgresql:postgresql")

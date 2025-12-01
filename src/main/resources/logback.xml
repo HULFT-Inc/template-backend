@@ -16,11 +16,25 @@
         </encoder>
     </appender>
 
+    <appender name="CLOUDWATCH" class="ca.pjer.logback.AwsLogsAppender">
+        <logGroupName>/aws/ec2/template-service</logGroupName>
+        <logStreamUuidPrefix>template-</logStreamUuidPrefix>
+        <logRegion>us-east-1</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>30</retentionTimeDays>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <logger name="com.saisontechnologyintl.template" level="DEBUG"/>
     <logger name="io.micronaut" level="INFO"/>
     
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="CLOUDWATCH"/>
     </root>
 </configuration>

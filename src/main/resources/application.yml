@@ -16,3 +16,21 @@ endpoints:
   health:
     enabled: true
     sensitive: false
+
+micrometer:
+  metrics:
+    enabled: true
+    export:
+      cloudwatch:
+        enabled: true
+        namespace: template-service
+        step: PT1M
+  web:
+    server:
+      auto-time-requests: true
+
+aws:
+  region: us-east-1
+  logs:
+    group: /aws/ec2/template-service
+    stream: template-${random.uuid}

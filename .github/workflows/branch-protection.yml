@@ -1,0 +1,47 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  enforce-gitflow:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@4
+      
+    - name: Validate branch name
+      run: |
+        BRANCH_NAME="${{ github.head_ref }}"
+        if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|release)/.+ ]]; then
+          echo "❌ Invalid branch name: $BRANCH_NAME"
+          echo "Branch must follow Git Flow naming: feature/*, bugfix/*, hotfix/*, release/*"
+          exit 1
+        fi
+        echo "✅ Valid Git Flow branch name: $BRANCH_NAME"
+        
+    - name: Validate commit messages
+      run: |
+        git fetch origin ${{ github.base_ref }}
+        COMMITS=$(git rev-list --no-merges origin/${{ github.base_ref }}..${{ github.sha }})
+        for commit in $COMMITS; do
+          MESSAGE=$(git log --format=%s -n 1 $commit)
+          if [[ ! "$MESSAGE" =~ ^JIRA-[A-Z0-9]+: ]]; then
+            echo "❌ Invalid commit message: $MESSAGE"
+            echo "Commit messages must start with JIRA-XXX:"
+            exit 1
+          fi
+        done
+        echo "✅ All commit messages follow JIRA format"
+        
+    - name: Check for merge conflicts
+      run: |
+        git fetch origin ${{ github.base_ref }}
+        if ! git merge-tree $(git merge-base HEAD origin/${{ github.base_ref }}) HEAD origin/${{ github.base_ref }} | grep -q "<<<<<<< "; then
+          echo "✅ No merge conflicts detected"
+        else
+          echo "❌ Merge conflicts detected"
+          exit 1
+        fi
