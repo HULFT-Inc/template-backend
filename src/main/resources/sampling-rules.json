@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "default": {
+    "fixed_target": 1,
+    "rate": 0.1
+  },
+  "rules": [
+    {
+      "description": "Template service sampling",
+      "service_name": "template-service",
+      "http_method": "*",
+      "url_path": "/template/*",
+      "fixed_target": 2,
+      "rate": 0.5
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+aws:
+  region: us-east-1
+  localstack:
+    enabled: true
+    endpoint: http://localhost:4566
+
+micronaut:
+  application:
+    name: template-backend
+  server:
+    context-path: /template
+
+_aws:
+  xray:
+    tracing-name: template-service
+    sampling-rate: 0.1
+    daemon-address: localhost:2000

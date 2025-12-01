@@ -1,0 +1,142 @@
+#!/bin/bash
+
+set -e
+
+PROFILE="${AWS_PROFILE:-predev}"
+REGION="${AWS_REGION:-us-east-2}"
+
+usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo "Options:"
+    echo "  --setup-all              Setup complete infrastructure automatically"
+    echo "  --vpc-id VPC_ID          VPC ID for deployment (optional if --setup-all)"
+    echo "  --subnets SUBNET_IDS     Comma-separated subnet IDs (optional if --setup-all)"
+    echo "  --image-uri IMAGE_URI    ECR image URI (optional, will use created ECR)"
+    echo "  --profile PROFILE        AWS profile (default: predev)"
+    echo "  --region REGION          AWS region (default: us-east-2)"
+    echo "  --help                   Show this help"
+}
+
+SETUP_ALL=false
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --setup-all)
+            SETUP_ALL=true
+            shift
+            ;;
+        --vpc-id)
+            VPC_ID="$2"
+            shift 2
+            ;;
+        --subnets)
+            SUBNETS="$2"
+            shift 2
+            ;;
+        --image-uri)
+            IMAGE_URI="$2"
+            shift 2
+            ;;
+        --profile)
+            PROFILE="$2"
+            shift 2
+            ;;
+        --region)
+            REGION="$2"
+            shift 2
+            ;;
+        --help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+echo "🚀 AWS VPC Lattice Rapid Deployment - Ohio (us-east-2)"
+echo "Profile: $PROFILE"
+echo "Region: $REGION"
+echo "Setup All: $SETUP_ALL"
+echo ""
+
+# Start deployer in background
+echo "🔧 Starting deployer service..."
+./gradlew run > deployer.log 2>&1 &
+DEPLOYER_PID=$!
+
+# Wait for service to start
+echo "⏳ Waiting for deployer to start..."
+for i in {1..30}; do
+    if curl -s http://localhost:8081/deploy/status > /dev/null 2>&1; then
+        echo "✅ Deployer is ready"
+        break
+    fi
+    sleep 2
+    if [ $i -eq 30 ]; then
+        echo "❌ Deployer failed to start"
+        kill $DEPLOYER_PID 2>/dev/null || true
+        exit 1
+    fi
+done
+
+if [ "$SETUP_ALL" = true ]; then
+    echo "🏗️  Setting up complete infrastructure..."
+    SETUP_RESPONSE=$(curl -s -X POST "http://localhost:8081/deploy/setup" \
+        -H "Content-Type: application/json")
+    
+    echo "📋 Infrastructure Setup Response:"
+    echo "$SETUP_RESPONSE" | jq . 2>/dev/null || echo "$SETUP_RESPONSE"
+    
+    # Extract infrastructure details for deployment
+    VPC_ID=$(echo "$SETUP_RESPONSE" | jq -r '.vpc.vpcId' 2>/dev/null)
+    SUBNET1=$(echo "$SETUP_RESPONSE" | jq -r '.subnets.subnet1Id' 2>/dev/null)
+    SUBNET2=$(echo "$SETUP_RESPONSE" | jq -r '.subnets.subnet2Id' 2>/dev/null)
+    SUBNETS="$SUBNET1,$SUBNET2"
+    IMAGE_URI=$(echo "$SETUP_RESPONSE" | jq -r '.ecr.repositoryUri' 2>/dev/null)
+    
+    if [ "$IMAGE_URI" != "null" ]; then
+        IMAGE_URI="$IMAGE_URI:latest"
+    fi
+    
+    echo ""
+    echo "📝 Infrastructure Details:"
+    echo "VPC ID: $VPC_ID"
+    echo "Subnets: $SUBNETS"
+    echo "ECR URI: $IMAGE_URI"
+    echo ""
+fi
+
+# Build deployment URL
+DEPLOY_URL="http://localhost:8081/deploy/predev"
+if [ -n "$VPC_ID" ] && [ -n "$SUBNETS" ]; then
+    DEPLOY_URL="$DEPLOY_URL?vpcId=$VPC_ID&subnets=$SUBNETS"
+    if [ -n "$IMAGE_URI" ]; then
+        DEPLOY_URL="$DEPLOY_URL&imageUri=$IMAGE_URI"
+    fi
+fi
+
+# Trigger deployment
+echo "🚀 Triggering deployment..."
+RESPONSE=$(curl -s -X POST "$DEPLOY_URL" -H "Content-Type: application/json")
+
+echo "📋 Deployment Response:"
+echo "$RESPONSE" | jq . 2>/dev/null || echo "$RESPONSE"
+
+# Check deployment status
+STATUS=$(echo "$RESPONSE" | jq -r '.status' 2>/dev/null || echo "UNKNOWN")
+
+# Cleanup
+kill $DEPLOYER_PID 2>/dev/null || true
+
+if [ "$STATUS" = "SUCCESS" ]; then
+    echo "✅ Deployment completed successfully in Ohio (us-east-2)!"
+    exit 0
+else
+    echo "❌ Deployment failed!"
+    exit 1
+fi

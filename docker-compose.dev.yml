@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: builder
+    volumes:
+      - .:/app
+      - gradle_cache:/home/gradle/.gradle
+    environment:
+      - MICRONAUT_ENVIRONMENTS=docker,dev
+    command: ["./gradlew", "run", "--continuous"]
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Debug port
+    stdin_open: true
+    tty: true
+
+volumes:
+  gradle_cache:

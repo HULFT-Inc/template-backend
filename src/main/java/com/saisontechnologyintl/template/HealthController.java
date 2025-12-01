@@ -12,14 +12,13 @@ import io.micronaut.http.annotation.Get;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller("/health")
 @Tag(name = "Health", description = "Health check operations")
 public class HealthController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(HealthController.class);
   private final Counter healthCheckCounter;
 
   public HealthController(MeterRegistry meterRegistry) {
@@ -31,8 +30,8 @@ public class HealthController {
   @ApiResponse(responseCode = "200", description = "Service is healthy")
   public String health() {
     healthCheckCounter.increment();
-    LOG.info("Health check requested - service is healthy");
-    LOG.debug("Health check counter incremented, metrics sent to CloudWatch");
+    log.info("Health check requested - service is healthy");
+    log.debug("Health check counter incremented, metrics sent to CloudWatch");
     return "OK";
   }
 }

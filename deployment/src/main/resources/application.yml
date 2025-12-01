@@ -1,0 +1,14 @@
+micronaut:
+  application:
+    name: aws-deployer
+  server:
+    port: 8081
+
+aws:
+  region: us-east-2
+  profile: predev
+
+logging:
+  level:
+    com.saisontechnologyintl.deployer: DEBUG
+    software.amazon.awssdk: WARN

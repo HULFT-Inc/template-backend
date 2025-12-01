@@ -1,0 +1,27 @@
+micronaut:
+  application:
+    name: template-backend
+  server:
+    context-path: /template
+    port: 8080
+
+datasources:
+  default:
+    url: jdbc:postgresql://postgres:5432/template
+    username: template
+    password: template123
+    driver-class-name: org.postgresql.Driver
+
+aws:
+  region: us-east-1
+  localstack:
+    enabled: true
+    endpoint: http://localstack:4566
+
+redis:
+  uri: redis://redis:6379
+
+logging:
+  level:
+    com.saisontechnologyintl.template: DEBUG
+    io.micronaut: INFO

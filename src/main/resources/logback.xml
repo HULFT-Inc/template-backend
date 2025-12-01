@@ -1,40 +1,98 @@
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    <!-- Console appender for development -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <!-- File appender for application logs -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/template.log</file>
+        <file>logs/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/template.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <!-- Async appender for better performance -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!-- AWS CloudWatch appender for production -->
     <appender name="CLOUDWATCH" class="ca.pjer.logback.AwsLogsAppender">
-        <logGroupName>/aws/ec2/template-service</logGroupName>
+        <layout>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+        <logGroupName>/aws/ecs/template-backend</logGroupName>
         <logStreamUuidPrefix>template-</logStreamUuidPrefix>
         <logRegion>us-east-1</logRegion>
         <maxBatchLogEvents>50</maxBatchLogEvents>
         <maxFlushTimeMillis>30000</maxFlushTimeMillis>
         <maxBlockTimeMillis>5000</maxBlockTimeMillis>
         <retentionTimeDays>30</retentionTimeDays>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </appender>
+
+    <!-- JSON appender for structured logging -->
+    <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/application.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.json</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <logLevel/>
+                <loggerName/>
+                <message/>
+                <mdc/>
+                <arguments/>
+                <stackTrace/>
+            </providers>
         </encoder>
     </appender>
 
-    <logger name="com.saisontechnologyintl.template" level="DEBUG"/>
+    <!-- Logger configurations -->
+    <logger name="com.saisontechnologyintl.template" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </logger>
+
     <logger name="io.micronaut" level="INFO"/>
-    
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+    <logger name="com.amazonaws" level="WARN"/>
+    <logger name="software.amazon.awssdk" level="WARN"/>
+
+    <!-- Root logger -->
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="CLOUDWATCH"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
     </root>
+
+    <!-- Profile-specific configurations -->
+    <springProfile name="prod">
+        <root level="WARN">
+            <appender-ref ref="CLOUDWATCH"/>
+            <appender-ref ref="JSON"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="docker">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="JSON"/>
+        </root>
+    </springProfile>
 </configuration>

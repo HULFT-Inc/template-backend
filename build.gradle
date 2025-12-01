@@ -1,10 +1,11 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.2.1"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("checkstyle")
     id("com.github.spotbugs") version "5.2.5"
     id("com.diffplug.spotless") version "6.23.3"
     id("org.owasp.dependencycheck") version "8.4.2"
+    id("jacoco")
 }
 
 version = "0.1"
@@ -18,33 +19,51 @@ dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
-    
+    annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")    
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.aws:micronaut-aws-alexa")
     implementation("io.micronaut.data:micronaut-data-jdbc")
+    implementation("io.micronaut.data:micronaut-data-jpa")
+    
+    implementation("jakarta.persistence:jakarta.persistence-api")
+    
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("software.amazon.awssdk:s3")
     implementation("software.amazon.awssdk:dynamodb")
     implementation("software.amazon.awssdk:sqs")
     implementation("software.amazon.awssdk:sns")
+    implementation("software.amazon.awssdk:xray")
+    implementation("com.amazonaws:aws-xray-recorder-sdk-core:2.15.1")
+    implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2:2.15.1")
+    implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2-instrumentor:2.15.1")
     implementation("io.micronaut.openapi:micronaut-openapi")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-cloudwatch")
     implementation("ca.pjer:logback-awslogs-appender:1.6.0")
-    
+    implementation("net.logstash.logback:logstash-logback-encoder:7.4")    
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.postgresql:postgresql")
     
     testImplementation("io.micronaut:micronaut-http-client")
-    testImplementation("io.cucumber:cucumber-java")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine")
+    testImplementation("io.cucumber:cucumber-java:7.14.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.14.0")
+    testImplementation("org.junit.platform:junit-platform-suite:1.9.3")
     testImplementation("com.tngtech.archunit:archunit-junit5:1.2.1")
     testImplementation("org.testcontainers:localstack")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("io.rest-assured:rest-assured")
+    testImplementation("org.awaitility:awaitility:4.2.0")
+    testImplementation("org.jacoco:org.jacoco.agent:0.8.8")
 }
 
 application {
@@ -72,6 +91,7 @@ checkstyle {
 
 spotbugs {
     toolVersion = "4.8.2"
+    excludeFilter = file("config/spotbugs/excludeFilter.xml")
 }
 
 tasks.named("check") {
@@ -87,3 +107,70 @@ spotless {
         endWithNewline()
     }
 }
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80
+            }
+        }
+        rule {
+            enabled = true
+            element = 'CLASS'
+            includes = ['com.saisontechnologyintl.template.*']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.75
+            }
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+
+task autoFix {
+    description = "Automatically fix code quality issues"
+    group = "verification"
+    
+    doLast {
+        // Apply Spotless formatting (fixes most Checkstyle issues)
+        project.tasks.spotlessApply.execute()
+        
+        // Generate SpotBugs report to identify issues
+        try {
+            project.tasks.spotbugsMain.execute()
+        } catch (Exception e) {
+            println "SpotBugs found issues - check build/reports/spotbugs/"
+        }
+        
+        println "Auto-fix completed. Run './gradlew build' to verify fixes."
+    }
+}
+
+// Configure Checkstyle to be less strict for auto-generated code
+checkstyle {
+    configProperties = [
+        'checkstyle.suppressions.file': file('config/checkstyle/suppressions.xml').absolutePath
+    ]
+}
+

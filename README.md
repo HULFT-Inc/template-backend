@@ -1,6 +1,17 @@
-# Example Template - Center of Excellence
+# Change Management Record System - Center of Excellence
 
-Java Micronaut REST Service template for new developers.
+Java Micronaut REST Service for tracking changes to business documents across organizations.
+
+## Domain Model
+- **Organizations**: GPS, ACME (identified by shortcodes)
+- **Document Types**: PO, INVOICE, CONTRACT, RECEIPT, OTHER
+- **Change Records**: Track field-level changes with audit trail
+
+## Use Cases
+- Track PO line item modifications
+- Monitor invoice due date changes
+- Audit contract amendments
+- Compliance reporting by organization
 
 ## Package Structure Requirements
 - **MANDATORY**: Use company domain `com.saisontechnologyintl.<project-name>`
@@ -66,8 +77,65 @@ Java Micronaut REST Service template for new developers.
 
 ## Endpoints
 - `GET /template/health` - Health check endpoint
-- `GET /template/metrics/test - Test custom metrics
+- `GET /template/metrics/test` - Test custom metrics
 - `GET /template/swagger-ui` - API documentation
+
+### Change Management API
+- `POST /template/changes` - Record a change
+- `GET /template/changes/org/{shortcode}` - Get changes by organization (GPS, ACME)
+- `GET /template/changes/type/{documentType}` - Get changes by document type (PO, INVOICE)
+- `GET /template/changes/org/{shortcode}/type/{documentType}` - Get changes by org and type
+- `GET /template/changes/document/{documentId}` - Get all changes for a document
+
+## Testing
+- **Unit Tests**: JUnit 5 with Mockito and AssertJ
+- **Functional Tests**: REST Assured integration tests
+- **BDD Tests**: Cucumber with Gherkin scenarios
+- **Performance Tests**: JMeter load testing
+- **Code Coverage**: JaCoCo with 80% minimum coverage
+
+## Design Patterns (Gang of Four)
+- **Factory Pattern**: AWS client creation with configuration
+- **Strategy Pattern**: Pluggable AWS operation algorithms
+- **Observer Pattern**: Metrics notification system
+- **Command Pattern**: AWS operations with undo capability
+- **Singleton Pattern**: Application configuration management
+
+## AWS SDK Integration
+- **S3**: Object storage operations with X-Ray tracing
+- **DynamoDB**: NoSQL database operations with X-Ray tracing
+- **SQS**: Message queue operations with X-Ray tracing
+- **SNS**: Notification service operations with X-Ray tracing
+- **X-Ray**: Distributed tracing for all AWS operations
+- **LocalStack**: Local AWS development environment
+
+## Lombok Integration
+- **@Data**: Automatic getters, setters, toString, equals, hashCode
+- **@Builder**: Builder pattern for object creation
+- **@Slf4j**: Automatic logger injection
+- **@RequiredArgsConstructor**: Constructor injection
+- **Reduced boilerplate**: Clean, readable code
+
+## Logback Configuration
+- **Console logging**: Colored output for development
+- **File logging**: Rolling file appenders with size/time limits
+- **JSON logging**: Structured logging for production
+- **AWS CloudWatch**: Direct log streaming to CloudWatch
+- **Async logging**: High-performance async appenders
+
+## Database Integration
+- **JPA/Hibernate**: Entity management with PostgreSQL
+- **User entity**: Complete CRUD operations example
+- **Repository pattern**: Micronaut Data JPA repositories
+- **Testcontainers**: Isolated database testing
+- **Database migrations**: SQL scripts for schema management
+
+## Docker Configuration
+- **Multi-stage build**: Optimized production images
+- **Development environment**: Hot reload with docker-compose
+- **Production ready**: Resource limits and health checks
+- **Service stack**: PostgreSQL, LocalStack, Redis integration
+- **Nginx proxy**: Load balancing and SSL termination
 
 ## Features
 - **API Documentation**: OpenAPI/Swagger UI available at `/template/swagger-ui`
@@ -78,5 +146,13 @@ Java Micronaut REST Service template for new developers.
 ## Context Path
 All endpoints are served under `/template` context path.
 
+## AWS VPC Lattice Deployment
+- **Rapid deployment**: Single command deployment to predev
+- **VPC Lattice**: Service mesh with service networks and target groups
+- **ECS Fargate**: Serverless container deployment
+- **AWS SDK v2**: Modern AWS integration with profile support
+- **Java Micronaut**: Lightweight deployment service
+
 ## Deployment
-Uses standard deployment tool: `~/bin/deployer deploy2dev`
+Uses VPC Lattice rapid deployment: `./control.sh deploy-predev` (Ohio region with automatic infrastructure setup)
+# GitHub Actions Test

@@ -1,0 +1,18 @@
+datasources:
+  default:
+    url: jdbc:tc:postgresql:15:///test
+    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
+    
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-drop
+        show_sql: false
+
+micronaut:
+  application:
+    name: template-backend
+  server:
+    context-path: /template
