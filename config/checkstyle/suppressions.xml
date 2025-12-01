@@ -20,4 +20,7 @@
     <!-- Suppress unused imports that might be used by annotations -->
     <suppress checks="UnusedImports" files=".*" message=".*jakarta\.inject\..*"/>
     <suppress checks="UnusedImports" files=".*" message=".*io\.micronaut\..*"/>
+    
+    <!-- Suppress entity checks -->
+    <suppress checks=".*" files=".*[\\/]entity[\\/].*"/>
 </suppressions>

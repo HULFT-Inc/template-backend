@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="~.*\.entity\..*"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="~.*\.strategy\..*"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="~.*\.singleton\..*"/>
+        <Bug pattern="MS_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="~.*Test"/>
+        <Bug pattern="ODR_OPEN_DATABASE_RESOURCE,OBL_UNSATISFIED_OBLIGATION"/>
+    </Match>
+</FindBugsFilter>

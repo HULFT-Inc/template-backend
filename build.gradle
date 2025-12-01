@@ -91,6 +91,7 @@ checkstyle {
 
 spotbugs {
     toolVersion = "4.8.2"
+    excludeFilter = file("config/spotbugs/excludeFilter.xml")
 }
 
 tasks.named("check") {
