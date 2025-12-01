@@ -17,7 +17,12 @@ CREATE TABLE IF NOT EXISTS change_records (
     old_value TEXT,
     new_value TEXT,
     changed_by VARCHAR(255) NOT NULL,
-    changed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    changed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    file_name VARCHAR(255),
+    file_type VARCHAR(50),
+    file_location TEXT,
+    storage_system VARCHAR(50),
+    system_detail TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_change_records_org ON change_records(organization_id);

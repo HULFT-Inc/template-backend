@@ -7,6 +7,8 @@ package com.saisontechnologyintl.template;
 
 import com.saisontechnologyintl.template.entity.ChangeRecord;
 import com.saisontechnologyintl.template.entity.DocumentType;
+import com.saisontechnologyintl.template.entity.FileType;
+import com.saisontechnologyintl.template.entity.StorageSystem;
 import com.saisontechnologyintl.template.service.ChangeRecordService;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
@@ -34,7 +36,12 @@ public class ChangeRecordController {
         request.fieldName,
         request.oldValue,
         request.newValue,
-        request.changedBy);
+        request.changedBy,
+        request.fileName,
+        request.fileType,
+        request.fileLocation,
+        request.storageSystem,
+        request.systemDetail);
   }
 
   @Get("/org/{shortcode}")
@@ -69,5 +76,10 @@ public class ChangeRecordController {
       String fieldName,
       String oldValue,
       String newValue,
-      String changedBy) {}
+      String changedBy,
+      String fileName,
+      FileType fileType,
+      String fileLocation,
+      StorageSystem storageSystem,
+      String systemDetail) {}
 }

@@ -7,7 +7,9 @@ package com.saisontechnologyintl.template.service;
 
 import com.saisontechnologyintl.template.entity.ChangeRecord;
 import com.saisontechnologyintl.template.entity.DocumentType;
+import com.saisontechnologyintl.template.entity.FileType;
 import com.saisontechnologyintl.template.entity.Organization;
+import com.saisontechnologyintl.template.entity.StorageSystem;
 import com.saisontechnologyintl.template.repository.ChangeRecordRepository;
 import com.saisontechnologyintl.template.repository.OrganizationRepository;
 import jakarta.inject.Singleton;
@@ -27,7 +29,12 @@ public class ChangeRecordService {
       String fieldName,
       String oldValue,
       String newValue,
-      String changedBy) {
+      String changedBy,
+      String fileName,
+      FileType fileType,
+      String fileLocation,
+      StorageSystem storageSystem,
+      String systemDetail) {
     Organization org =
         organizationRepository
             .findByShortcode(orgShortcode)
@@ -42,6 +49,11 @@ public class ChangeRecordService {
     record.setOldValue(oldValue);
     record.setNewValue(newValue);
     record.setChangedBy(changedBy);
+    record.setFileName(fileName);
+    record.setFileType(fileType);
+    record.setFileLocation(fileLocation);
+    record.setStorageSystem(storageSystem);
+    record.setSystemDetail(systemDetail);
 
     return changeRecordRepository.save(record);
   }
