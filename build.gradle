@@ -6,6 +6,7 @@ plugins {
     id("com.diffplug.spotless") version "6.23.3"
     id("org.owasp.dependencycheck") version "8.4.2"
     id("jacoco")
+    id("com.github.jakemarsden.git-hooks") version "0.0.2"
 }
 
 version = "0.1"
@@ -110,6 +111,10 @@ spotless {
 
 jacoco {
     toolVersion = "0.8.8"
+}
+
+gitHooks {
+    hooks = ['pre-commit': 'spotlessApply checkstyleMain spotbugsMain']
 }
 
 jacocoTestReport {
