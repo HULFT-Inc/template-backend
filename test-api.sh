@@ -1,9 +1,9 @@
 #!/bin/bash
 
 PORT=${1:-8080}
-BASE_URL="http://localhost:${PORT}/template"
+BASE_URL="http://localhost:${PORT}/change-tracker"
 
-echo "Testing Change Management API on port ${PORT}"
+echo "Testing Change Tracker API on port ${PORT}"
 echo "============================================"
 
 # Test 1: Record a PO change for GPS
@@ -17,7 +17,12 @@ curl -s -X POST ${BASE_URL}/changes \
     "fieldName": "lineItem",
     "oldValue": "100 units",
     "newValue": "150 units",
-    "changedBy": "john.doe"
+    "changedBy": "john.doe",
+    "fileName": "purchase_order.pdf",
+    "fileType": "PDF",
+    "fileLocation": "https://drive.google.com/file/d/abc123",
+    "storageSystem": "GOOGLE_DRIVE",
+    "systemDetail": "{\"driveId\": \"abc123\"}"
   }' | jq .
 
 # Test 2: Record invoice change for ACME
@@ -31,7 +36,12 @@ curl -s -X POST ${BASE_URL}/changes \
     "fieldName": "dueDate",
     "oldValue": "2025-01-15",
     "newValue": "2025-02-01",
-    "changedBy": "jane.smith"
+    "changedBy": "jane.smith",
+    "fileName": "invoice.xlsx",
+    "fileType": "EXCEL",
+    "fileLocation": "s3://bucket/invoice.xlsx",
+    "storageSystem": "S3",
+    "systemDetail": "{\"bucket\": \"invoices\", \"region\": \"us-east-1\"}"
   }' | jq .
 
 # Test 3: Get changes by organization

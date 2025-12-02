@@ -10,17 +10,19 @@ import com.saisontechnologyintl.template.entity.DocumentType;
 import com.saisontechnologyintl.template.entity.FileType;
 import com.saisontechnologyintl.template.entity.StorageSystem;
 import com.saisontechnologyintl.template.service.ChangeRecordService;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
-@Controller("/change-tracker/changes")
+@Controller("/changes")
 @Tag(name = "Change Management")
 @RequiredArgsConstructor
 public class ChangeRecordController {
@@ -69,6 +71,8 @@ public class ChangeRecordController {
     return changeRecordService.getChangesByDocumentId(documentId);
   }
 
+  @Serdeable
+  @Introspected
   public record ChangeRequest(
       String orgShortcode,
       DocumentType documentType,
