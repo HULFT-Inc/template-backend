@@ -1,6 +1,6 @@
 micronaut:
   server:
-    context-path: /change-tracker
+    context-path: /changetracker
   application:
     name: change-tracker
   router:

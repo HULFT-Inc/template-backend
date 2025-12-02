@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PORT=${1:-8080}
-BASE_URL="http://localhost:${PORT}/change-tracker"
+BASE_URL="http://localhost:${PORT}/changetracker"
 
 echo "Testing Change Tracker API on port ${PORT}"
 echo "============================================"
