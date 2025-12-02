@@ -31,6 +31,11 @@ micrometer:
 
 aws:
   region: us-east-1
+  xray:
+    enabled: true
+    tracing-name: change-tracker-service
+    sampling-rate: 0.1
+    daemon-address: localhost:2000
   logs:
     group: /aws/ec2/change-tracker-service
     stream: change-tracker-${random.uuid}
