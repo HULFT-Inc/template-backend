@@ -9,7 +9,7 @@ plugins {
 }
 
 version = "0.1"
-group = "com.saisontechnologyintl.template"
+group = "com.saisontechnologyintl.changetracker"
 
 repositories {
     mavenCentral()

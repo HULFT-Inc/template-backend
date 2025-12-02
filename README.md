@@ -1,4 +1,4 @@
-# Change Management Record System - Center of Excellence
+# Change Tracker - Document Change Management System
 
 Java Micronaut REST Service for tracking changes to business documents across organizations.
 
@@ -76,16 +76,16 @@ Java Micronaut REST Service for tracking changes to business documents across or
 
 
 ## Endpoints
-- `GET /template/health` - Health check endpoint
-- `GET /template/metrics/test` - Test custom metrics
-- `GET /template/swagger-ui` - API documentation
+- `GET /change-tracker/health` - Health check endpoint
+- `GET /change-tracker/metrics/test` - Test custom metrics
+- `GET /change-tracker/swagger-ui` - API documentation
 
 ### Change Management API
-- `POST /template/changes` - Record a change
-- `GET /template/changes/org/{shortcode}` - Get changes by organization (GPS, ACME)
-- `GET /template/changes/type/{documentType}` - Get changes by document type (PO, INVOICE)
-- `GET /template/changes/org/{shortcode}/type/{documentType}` - Get changes by org and type
-- `GET /template/changes/document/{documentId}` - Get all changes for a document
+- `POST /change-tracker/changes` - Record a change
+- `GET /change-tracker/changes/org/{shortcode}` - Get changes by organization (GPS, ACME)
+- `GET /change-tracker/changes/type/{documentType}` - Get changes by document type (PO, INVOICE)
+- `GET /change-tracker/changes/org/{shortcode}/type/{documentType}` - Get changes by org and type
+- `GET /change-tracker/changes/document/{documentId}` - Get all changes for a document
 
 ## Testing
 - **Unit Tests**: JUnit 5 with Mockito and AssertJ
@@ -144,7 +144,7 @@ Java Micronaut REST Service for tracking changes to business documents across or
 - **PostgreSQL Testing**: Testcontainers integration
 
 ## Context Path
-All endpoints are served under `/template` context path.
+All endpoints are served under `/change-tracker` context path.
 
 ## AWS VPC Lattice Deployment
 - **Rapid deployment**: Single command deployment to predev

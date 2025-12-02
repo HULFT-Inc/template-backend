@@ -1,8 +1,8 @@
 micronaut:
   server:
-    context-path: /template
+    context-path: /change-tracker
   application:
-    name: template
+    name: change-tracker
   router:
     static-resources:
       swagger:
@@ -23,7 +23,7 @@ micrometer:
     export:
       cloudwatch:
         enabled: true
-        namespace: template-service
+        namespace: change-tracker-service
         step: PT1M
   web:
     server:
@@ -32,5 +32,5 @@ micrometer:
 aws:
   region: us-east-1
   logs:
-    group: /aws/ec2/template-service
-    stream: template-${random.uuid}
+    group: /aws/ec2/change-tracker-service
+    stream: change-tracker-${random.uuid}

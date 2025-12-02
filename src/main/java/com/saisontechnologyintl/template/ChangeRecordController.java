@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
-@Controller("/template/changes")
+@Controller("/change-tracker/changes")
 @Tag(name = "Change Management")
 @RequiredArgsConstructor
 public class ChangeRecordController {
