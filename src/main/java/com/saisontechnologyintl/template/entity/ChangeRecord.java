@@ -55,6 +55,19 @@ public class ChangeRecord {
   @Column(nullable = false)
   private LocalDateTime changedAt;
 
+  private String fileName;
+
+  @Enumerated(EnumType.STRING)
+  private FileType fileType;
+
+  private String fileLocation;
+
+  @Enumerated(EnumType.STRING)
+  private StorageSystem storageSystem;
+
+  @Column(columnDefinition = "TEXT")
+  private String systemDetail;
+
   @PrePersist
   protected void onCreate() {
     changedAt = LocalDateTime.now();
