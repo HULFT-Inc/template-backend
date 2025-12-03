@@ -46,14 +46,17 @@ show_help() {
     echo "  logs          Show application logs"
     echo "  localstack    Start LocalStack for local AWS development"
     echo "  aws-test      Test AWS services integration"
-  autofix       Automatically fix code quality issues    echo "  help          Show this help message"
-  docker-build  Build Docker image
-  docker-up     Start all services with Docker
-  docker-dev    Start development environment with hot reload
-  docker-down   Stop all Docker services
-  docker-logs   Show Docker logs}
-  deploy-predev Deploy to predev using VPC Lattice
-  deploy-status Check deployment status
+    echo "  autofix       Automatically fix code quality issues"
+    echo "  help          Show this help message"
+    echo "  docker-build  Build Docker image"
+    echo "  docker-up     Start all services with Docker"
+    echo "  docker-dev    Start development environment with hot reload"
+    echo "  docker-down   Stop all Docker services"
+    echo "  docker-logs   Show Docker logs"
+    echo "  deploy-predev Deploy to predev using VPC Lattice"
+    echo "  deploy-status Check deployment status"
+}
+
 # Build function
 build() {
     log "Building application..."
@@ -265,12 +268,13 @@ case "${1:-help}" in
         docker_down
         ;;
     docker-logs)
+        docker_logs
+        ;;
     deploy-predev)
         deploy_predev
         ;;
     deploy-status)
         deploy_status
-        ;;        docker_logs
         ;;
     help|*)
         show_help
@@ -324,17 +328,15 @@ deploy_predev() {
         
         log "export IMAGE_URI=123456789012.dkr.ecr.us-east-1.amazonaws.com/template-backend:latest"
         cd deployment && ./rapid-deploy --setup-all && cd ..
-    fi
-    
-    cd deployment
     else
         if [[ -z "$VPC_ID" || -z "$SUBNETS" || -z "$IMAGE_URI" ]]; then
             error "Manual mode requires VPC_ID, SUBNETS, and IMAGE_URI environment variables"
             exit 1
         fi
+        cd deployment
         ./rapid-deploy --vpc-id "$VPC_ID" --subnets "$SUBNETS" --image-uri "$IMAGE_URI"
+        cd ..
     fi
-    cd ..
 }
 
 deploy_status() {

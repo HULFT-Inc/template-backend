@@ -7,18 +7,22 @@ package com.saisontechnologyintl.template;
 
 import com.saisontechnologyintl.template.entity.ChangeRecord;
 import com.saisontechnologyintl.template.entity.DocumentType;
+import com.saisontechnologyintl.template.entity.FileType;
+import com.saisontechnologyintl.template.entity.StorageSystem;
 import com.saisontechnologyintl.template.service.ChangeRecordService;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
-@Controller("/template/changes")
+@Controller("/changes")
 @Tag(name = "Change Management")
 @RequiredArgsConstructor
 public class ChangeRecordController {
@@ -34,7 +38,12 @@ public class ChangeRecordController {
         request.fieldName,
         request.oldValue,
         request.newValue,
-        request.changedBy);
+        request.changedBy,
+        request.fileName,
+        request.fileType,
+        request.fileLocation,
+        request.storageSystem,
+        request.systemDetail);
   }
 
   @Get("/org/{shortcode}")
@@ -62,6 +71,8 @@ public class ChangeRecordController {
     return changeRecordService.getChangesByDocumentId(documentId);
   }
 
+  @Serdeable
+  @Introspected
   public record ChangeRequest(
       String orgShortcode,
       DocumentType documentType,
@@ -69,5 +80,10 @@ public class ChangeRecordController {
       String fieldName,
       String oldValue,
       String newValue,
-      String changedBy) {}
+      String changedBy,
+      String fileName,
+      FileType fileType,
+      String fileLocation,
+      StorageSystem storageSystem,
+      String systemDetail) {}
 }
