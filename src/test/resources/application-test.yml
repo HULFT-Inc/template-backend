@@ -16,3 +16,8 @@ micronaut:
     name: template-backend
   server:
     context-path: /template
+
+aws:
+  xray:
+    enabled: false
+

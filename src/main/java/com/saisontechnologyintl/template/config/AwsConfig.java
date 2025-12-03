@@ -33,25 +33,33 @@ public class AwsConfig {
   @Value("${aws.localstack.endpoint:http://localhost:4566}")
   private String localstackEndpoint;
 
+  @Value("${aws.xray.enabled:false}")
+  private Boolean xrayEnabled;
+
   @PostConstruct
   public void initXRay() {
-    AWSXRayRecorderBuilder builder =
-        AWSXRayRecorderBuilder.standard()
-            .withPlugin(new EC2Plugin())
-            .withPlugin(new ECSPlugin())
-            .withSamplingStrategy(new LocalizedSamplingStrategy());
+    if (xrayEnabled) {
+      AWSXRayRecorderBuilder builder =
+          AWSXRayRecorderBuilder.standard()
+              .withPlugin(new EC2Plugin())
+              .withPlugin(new ECSPlugin())
+              .withSamplingStrategy(new LocalizedSamplingStrategy());
 
-    AWSXRay.setGlobalRecorder(builder.build());
+      AWSXRay.setGlobalRecorder(builder.build());
+    }
   }
 
   @Bean
   public AwsClientFactory awsClientFactory() {
-    ClientOverrideConfiguration clientConfig =
-        ClientOverrideConfiguration.builder()
-            .addExecutionInterceptor(new com.amazonaws.xray.interceptors.TracingInterceptor())
-            .build();
+    ClientOverrideConfiguration.Builder configBuilder = ClientOverrideConfiguration.builder();
 
-    return new AwsClientFactory(region, localstackEnabled, localstackEndpoint, clientConfig);
+    if (xrayEnabled) {
+      configBuilder.addExecutionInterceptor(
+          new com.amazonaws.xray.interceptors.TracingInterceptor());
+    }
+
+    return new AwsClientFactory(
+        region, localstackEnabled, localstackEndpoint, configBuilder.build());
   }
 
   @Bean
