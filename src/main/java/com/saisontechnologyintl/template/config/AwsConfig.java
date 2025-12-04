@@ -36,9 +36,14 @@ public class AwsConfig {
   @Value("${aws.xray.enabled:false}")
   private Boolean xrayEnabled;
 
+  @Value("${aws.xray.daemon-address:127.0.0.1:2000}")
+  private String xrayDaemonAddress;
+
   @PostConstruct
   public void initXRay() {
     if (xrayEnabled) {
+      System.setProperty("com.amazonaws.xray.emitters.daemonAddress", xrayDaemonAddress);
+      
       AWSXRayRecorderBuilder builder =
           AWSXRayRecorderBuilder.standard()
               .withPlugin(new EC2Plugin())
@@ -46,6 +51,7 @@ public class AwsConfig {
               .withSamplingStrategy(new LocalizedSamplingStrategy());
 
       AWSXRay.setGlobalRecorder(builder.build());
+      System.out.println("X-Ray initialized with daemon at: " + xrayDaemonAddress);
     }
   }
 
