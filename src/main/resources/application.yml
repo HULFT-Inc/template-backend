@@ -34,7 +34,7 @@ aws:
   xray:
     enabled: true
     tracing-name: change-tracker-service
-    sampling-rate: 0.1
+    sampling-rate: 1.0
     daemon-address: localhost:2000
   logs:
     group: /aws/ec2/change-tracker-service

@@ -43,7 +43,7 @@ public class AwsConfig {
   public void initXRay() {
     if (xrayEnabled) {
       System.setProperty("com.amazonaws.xray.emitters.daemonAddress", xrayDaemonAddress);
-      
+
       AWSXRayRecorderBuilder builder =
           AWSXRayRecorderBuilder.standard()
               .withPlugin(new EC2Plugin())

@@ -29,7 +29,7 @@ public class XRayFilter implements HttpServerFilter {
   @Override
   public Publisher<MutableHttpResponse<?>> doFilter(
       HttpRequest<?> request, ServerFilterChain chain) {
-    
+
     if (!xrayEnabled) {
       return chain.proceed(request);
     }
