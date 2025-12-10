@@ -21,6 +21,9 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Factory
 public class AwsConfig {
 
@@ -42,6 +45,7 @@ public class AwsConfig {
   @PostConstruct
   public void initXRay() {
     if (xrayEnabled) {
+      log.info("Initializing X-Ray with daemon at: {}", emitterDaemonAddress);
       System.setProperty("com.amazonaws.xray.emitters.daemonAddress", emitterDaemonAddress);
 
       AWSXRayRecorderBuilder builder =
@@ -51,7 +55,9 @@ public class AwsConfig {
               .withSamplingStrategy(new LocalizedSamplingStrategy());
 
       AWSXRay.setGlobalRecorder(builder.build());
-      System.out.println("X-Ray initialized with daemon at: " + emitterDaemonAddress);
+      log.info("X-Ray initialized successfully with daemon at: {}", emitterDaemonAddress);
+    } else {
+      log.info("X-Ray is disabled");
     }
   }
 

@@ -12,6 +12,12 @@ micronaut:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
 
+logger:
+  levels:
+    com.saisontechnologyintl.template.filter.XRayFilter: DEBUG
+    com.saisontechnologyintl.template.config.AwsConfig: DEBUG
+    com.amazonaws.xray: DEBUG
+
 endpoints:
   health:
     enabled: true
