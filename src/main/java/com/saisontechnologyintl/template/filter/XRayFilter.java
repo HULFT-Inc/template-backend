@@ -7,7 +7,7 @@ package com.saisontechnologyintl.template.filter;
 
 import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.entities.Segment;
-import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
@@ -21,12 +21,19 @@ import org.reactivestreams.Publisher;
 @Slf4j
 @Singleton
 @Filter("/**")
-@Requires(property = "aws.xray.enabled", value = "true")
 public class XRayFilter implements HttpServerFilter {
+
+  @Value("${aws.xray.enabled:false}")
+  private Boolean xrayEnabled;
 
   @Override
   public Publisher<MutableHttpResponse<?>> doFilter(
       HttpRequest<?> request, ServerFilterChain chain) {
+    
+    if (!xrayEnabled) {
+      return chain.proceed(request);
+    }
+
     Segment segment = AWSXRay.beginSegment("changetracker-" + request.getPath());
 
     try {
