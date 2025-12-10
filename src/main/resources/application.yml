@@ -36,6 +36,8 @@ aws:
     tracing-name: change-tracker-service
     sampling-rate: 1.0
     daemon-address: localhost:2000
+    emitter:
+      daemon-address: 127.0.0.1:2000
   logs:
     group: /aws/ec2/change-tracker-service
     stream: change-tracker-${random.uuid}
