@@ -3,6 +3,8 @@ micronaut:
     context-path: /changetracker
   application:
     name: change-tracker
+  environments:
+    active: database
   router:
     static-resources:
       swagger:
