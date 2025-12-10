@@ -15,12 +15,14 @@ import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Value;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
+@Slf4j
 @Factory
 public class AwsConfig {
 
@@ -33,25 +35,42 @@ public class AwsConfig {
   @Value("${aws.localstack.endpoint:http://localhost:4566}")
   private String localstackEndpoint;
 
+  @Value("${aws.xray.enabled:false}")
+  private Boolean xrayEnabled;
+
+  @Value("${aws.xray.emitter.daemon-address:127.0.0.1:2000}")
+  private String emitterDaemonAddress;
+
   @PostConstruct
   public void initXRay() {
-    AWSXRayRecorderBuilder builder =
-        AWSXRayRecorderBuilder.standard()
-            .withPlugin(new EC2Plugin())
-            .withPlugin(new ECSPlugin())
-            .withSamplingStrategy(new LocalizedSamplingStrategy());
+    if (xrayEnabled) {
+      log.info("Initializing X-Ray with daemon at: {}", emitterDaemonAddress);
+      System.setProperty("com.amazonaws.xray.emitters.daemonAddress", emitterDaemonAddress);
 
-    AWSXRay.setGlobalRecorder(builder.build());
+      AWSXRayRecorderBuilder builder =
+          AWSXRayRecorderBuilder.standard()
+              .withPlugin(new EC2Plugin())
+              .withPlugin(new ECSPlugin())
+              .withSamplingStrategy(new LocalizedSamplingStrategy());
+
+      AWSXRay.setGlobalRecorder(builder.build());
+      log.info("X-Ray initialized successfully with daemon at: {}", emitterDaemonAddress);
+    } else {
+      log.info("X-Ray is disabled");
+    }
   }
 
   @Bean
   public AwsClientFactory awsClientFactory() {
-    ClientOverrideConfiguration clientConfig =
-        ClientOverrideConfiguration.builder()
-            .addExecutionInterceptor(new com.amazonaws.xray.interceptors.TracingInterceptor())
-            .build();
+    ClientOverrideConfiguration.Builder configBuilder = ClientOverrideConfiguration.builder();
 
-    return new AwsClientFactory(region, localstackEnabled, localstackEndpoint, clientConfig);
+    if (xrayEnabled) {
+      configBuilder.addExecutionInterceptor(
+          new com.amazonaws.xray.interceptors.TracingInterceptor());
+    }
+
+    return new AwsClientFactory(
+        region, localstackEnabled, localstackEndpoint, configBuilder.build());
   }
 
   @Bean

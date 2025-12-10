@@ -3,6 +3,8 @@ micronaut:
     context-path: /changetracker
   application:
     name: change-tracker
+  environments:
+    active: database
   router:
     static-resources:
       swagger:
@@ -11,6 +13,12 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+
+logger:
+  levels:
+    com.saisontechnologyintl.template.filter.XRayFilter: DEBUG
+    com.saisontechnologyintl.template.config.AwsConfig: DEBUG
+    com.amazonaws.xray: DEBUG
 
 endpoints:
   health:
@@ -34,8 +42,10 @@ aws:
   xray:
     enabled: true
     tracing-name: change-tracker-service
-    sampling-rate: 0.1
+    sampling-rate: 1.0
     daemon-address: localhost:2000
+    emitter:
+      daemon-address: 127.0.0.1:2000
   logs:
     group: /aws/ec2/change-tracker-service
     stream: change-tracker-${random.uuid}
