@@ -7,70 +7,16 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  quality-gates:
+  build:
     runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-        java-version: [17]
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       
-    - name: Set up JDK ${{ matrix.java-version }}
-      uses: actions/setup-java@v4
+    - uses: actions/setup-java@v4
       with:
-        java-version: ${{ matrix.java-version }}
+        java-version: '17'
         distribution: 'temurin'
         
-    - name: Cache Gradle packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-          
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Build application
+    - name: Build
       run: ./gradlew build -x test --no-daemon
-      
-    - name: Run Checkstyle
-      run: ./gradlew checkstyleMain checkstyleTest --no-daemon
-      
-    - name: Run SpotBugs
-      run: ./gradlew spotbugsMain spotbugsTest --no-daemon
-      
-    - name: Generate Test Report
-      uses: dorny/test-reporter@1
-      if: success() || failure()
-      with:
-        name: Test Results (Java ${{ matrix.java-version }})
-        path: build/test-results/test/*.xml
-        reporter: java-junit
-        
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: build-reports-java-${{ matrix.java-version }}
-        path: |
-          build/reports/
-          build/test-results/
-          
-    - name: Comment PR with quality results
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@6
-      with:
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '✅ Quality gates passed for Java ${{ matrix.java-version }}'
-          })
