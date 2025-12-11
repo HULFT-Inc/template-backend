@@ -14,7 +14,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - run: chmod +x gradlew
-    - run: ./gradlew shadowJar --no-daemon
+    - run: ./gradlew clean shadowJar --no-daemon
+    - run: ls -la build/libs/
     - uses: softprops/action-gh-release@v2
       with:
-        files: build/libs/*-all.jar
+        files: build/libs/*.jar
