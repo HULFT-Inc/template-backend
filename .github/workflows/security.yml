@@ -1,33 +1,16 @@
 name: Security Pipeline
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
-  schedule:
-    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM
+  workflow_dispatch:  # Manual trigger only
 
 jobs:
   security-scan:
     runs-on: ubuntu-latest
-    
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
+    if: false  # Disabled
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        
-    - name: Cache Gradle packages
+    - name: Disabled
+      run: echo "Security pipeline disabled"
       uses: actions/cache@v4
       with:
         path: |
